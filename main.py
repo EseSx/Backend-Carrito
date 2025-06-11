@@ -15,73 +15,7 @@ app.add_middleware(
     allow_headers=["*"],  # Permitir todos los encabezados
 )
 
-# --- Creacion de modelos pydantic ---
-from pydantic import BaseModel
-
-
-class Usuarios_comunes(BaseModel):
-    """
-    Modelo para recibir usuarios comunes
-    """
-
-    nombre: str
-    apellido: str
-    contraseña: str
-    correo_electronico: str
-    estatus: str
-
-
-class Ventas(BaseModel):
-    """
-    Modelo para recibir ventas
-    """
-
-    medio_de_pago: str
-    cuotas: bool
-    cantidad: int
-    codigo_viaje: int
-
-
-class Viaje_simple(BaseModel):
-    codigo: int
-    nombre: str
-    descripcion: str
-    precio: float
-    origen: str
-    destino: str
-    transporte: str
-    fecha: str
-    hora: str
-    cupos: int
-    duracion_aprox: str
-    tipo_de_viaje: str  # solo ida o ida y vuelta
-
-
-class Paquete_de_viaje(BaseModel):
-    nombre: str
-    precio: float
-    origen: str
-    destino: str
-    estadia: str
-    tipo: str  # nacional o internacional
-
-
-class Auto(BaseModel):
-    modelo: str
-    disponibles: int
-    precio_por_dia: float
-
-
-class Excursiones(BaseModel):
-    nombre: str
-    inicio: str
-    final: str
-
-
-# --- Creacion de las rutas ---
-
-
-# --- Coneccion/Creacino de base de datos ---
+# --- Coneccion/Creacion de base de datos ---
 import psycopg2
 
 hostURL = "postgresql://santi:NfWdr3CRaZ9q3qZhazSVltB0dW3qQ52W@dpg-d13hpvggjchc73cb6fj0-a.ohio-postgres.render.com/bd_productos"
@@ -182,20 +116,3 @@ cursor.execute(
 
 conexion.commit()
 conexion.close()
-
-# --- Codificado de Bcript ---
-import bcrypt
-
-# password = "mi_contraseña_segura".encode("utf-8")
-
-# hashed = bcrypt.hashpw(password, bcrypt.gensalt())
-
-# print("Contraseña original:", password)
-# print("Hash generado:", hashed)
-
-# entrada_usuario = "mi_contraseña_segur".encode("utf-8")
-
-# if bcrypt.checkpw(entrada_usuario, hashed):
-#     print("Contraseña correcta")
-# else:
-#     print("Contraseña incorrecta")
