@@ -1,25 +1,9 @@
-import psycopg2
-import datetime  # Para convertir variables a tipo date para postgre
-
-from excursiones import paqueteViajesExcursion
-from datetime import datetime
-
-# Van a haber dos conexiones por las 2 bd que existen
-# No se porque le puse conexion viaje si va a funcionar para todas las tablas de la bd general
+# --- Coneccion BD ---
+from main import cursor
 
 
-# Que no se eliminen los viajes cuando lleguen a 0 cuos hasta despes de cierto tiepo en caso de que quieran cancelar la compra
-
-
-# Cosas que me faltan CRUD y consultas para la base Autos
-# Funciones para actualizar cada tabla (tengo que hacer uno de cada metodo)
-# Funciones para tablas clientes
-
-dns = "postgresql://santi:NfWdr3CRaZ9q3qZhazSVltB0dW3qQ52W@dpg-d13hpvggjchc73cb6fj0-a.ohio-postgres.render.com/bd_productos"
-conexionViajes = psycopg2.connect(dns)
-cursor = conexionViajes.cursor()
-
-# Convierte la respuesta de la tabla viaje simple (TVS) a diccionario
+# --- Convertir TVS & TVP a diccionario ---
+import datetime
 
 
 def convertirDatosTVS(respuesta):
@@ -56,7 +40,6 @@ def convertirDatosTVS(respuesta):
     return registroListas
 
 
-# Convierte la respuesta de la tabla paquete de viajes (TVS) a diccionario
 def convertirDatosTPV(respuesta):
     registroListas = []
     for item in respuesta:
@@ -138,7 +121,7 @@ def restarCupoTVS(codigoViaje, cantidad):
             "UPDATE viaje_simple SET cupos = cupos - %s WHERE codigo = %s",
             (cantidad, codigoViaje),
         )
-        conexionViajes.commit()
+        cursor.commit()
 
         return {"Mensaje": "Cupo decrementado exitosamente"}
 
@@ -161,7 +144,7 @@ def restarCupoTPV(codigoViaje, cantidad):
             "UPDATE paquete_de_viajes SET cupos = cupos - %s WHERE codigo = %s",
             (cantidad, codigoViaje),
         )
-        conexionViajes.commit()
+        cursor.commit()
 
         return {"Mensaje": "Cupo decrementado exitosamente"}
 
@@ -220,7 +203,7 @@ def agregarViajeSimple(
     )
     hora = convertirHora(hora)
     fecha = convertirDate(fecha)
-    conexionViajes.commit()
+    cursor.commit()
 
     return {"Mensaje": "Nuevo viaje simple agregado"}
 
@@ -263,21 +246,21 @@ def agregarPaquetedeViaje(
             estado,
         ),
     )
-    conexionViajes.commit()
+    cursor.commit()
 
     return {"Mensaje": "Nuevo viaje simple agregado"}
 
 
 def quitarViajesimple(codigoDeViaje):
     cursor.execute("DELETE FROM viaje_simple WHERE codigo = %s", (codigoDeViaje,))
-    conexionViajes.commit()
+    cursor.commit()
 
     return {"Mensaje": "Viaje borrado exitosamente"}
 
 
 def quitarPaquetedeViaje(codigoDeViaje):
     cursor.execute("DELETE FROM paquete_de_viajes WHERE codigo = %s", (codigoDeViaje,))
-    conexionViajes.commit()
+    cursor.commit()
 
     return {"Mensaje": "Viaje borrado exitosamente"}
 

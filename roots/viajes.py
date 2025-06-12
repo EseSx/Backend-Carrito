@@ -10,13 +10,3 @@ from modulos.viajes import verViajesSimples
 @router.get("/obtener")
 def retornar_usuario():
     return {verViajesSimples()}
-
-
-@router.get("/hola")
-def retornar_hola():
-    return {"msg": "hola"}
-
-
-@router.get("/hola2")
-def retornar_hola2():
-    return {"msg": "hola2"}
