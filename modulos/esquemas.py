@@ -38,6 +38,7 @@ class Viaje_simple(BaseModel):
     cupos: int
     duracion_aprox: str
     tipo_de_viaje: str  # solo ida o ida y vuelta
+    estado: str
 
 
 class Paquete_de_viaje(BaseModel):
@@ -47,6 +48,7 @@ class Paquete_de_viaje(BaseModel):
     destino: str
     estadia: str
     tipo: str  # nacional o internacional
+    estado: str
 
 
 class Auto(BaseModel):
