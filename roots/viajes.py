@@ -15,3 +15,8 @@ def retornar_usuario():
 @router.get("/hola")
 def retornar_hola():
     return {"msg": "hola"}
+
+
+@router.get("/hola2")
+def retornar_hola2():
+    return {"msg": "hola2"}
