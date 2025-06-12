@@ -1,7 +1,7 @@
 import psycopg2
 import datetime  # Para convertir variables a tipo date para postgre
 
-# from excursiones import paqueteViajesExcursion
+from excursiones import paqueteViajesExcursion
 from datetime import datetime
 
 # Van a haber dos conexiones por las 2 bd que existen
