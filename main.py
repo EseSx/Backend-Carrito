@@ -29,4 +29,4 @@ cursor = conexion.cursor()
 from roots import rutas
 
 for router in rutas:
-    app.include_router
+    app.include_router(router)
