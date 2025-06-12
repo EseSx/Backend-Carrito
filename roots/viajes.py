@@ -9,4 +9,4 @@ from modulos.viajes import verViajesSimples
 
 @router.get("/obtener")
 def retornar_usuario():
-    return {verViajesSimples()}
+    return verViajesSimples()
