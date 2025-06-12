@@ -116,3 +116,14 @@ cursor.execute(
 
 conexion.commit()
 conexion.close()
+
+
+#  Ruta de prueba
+from modulos.viajes import verViajesSimples
+
+# print(verViajesSimples())
+
+
+@app.get("/obtener")
+def retornar():
+    return {"Regreso": verViajesSimples()}
