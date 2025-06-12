@@ -26,7 +26,6 @@ cursor = conexion.cursor()
 
 
 # --- Rutas ---
-from roots import rutas
+from roots.viajes import router as viajes_routers
 
-for router in rutas:
-    app.include_router(router)
+app.include_router(viajes_routers, prefix="/viajes")
