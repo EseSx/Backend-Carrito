@@ -1,14 +1,26 @@
-# --- Coneccion con la BD ---
 import psycopg2
 import datetime  # Para convertir variables a tipo date para postgre
+from excursiones import paqueteViajesExcursion
+from datetime import datetime
+
+# Van a haber dos conexiones por las 2 bd que existen
+# No se porque le puse conexion viaje si va a funcionar para todas las tablas de la bd general
+
+
+# Que no se eliminen los viajes cuando lleguen a 0 cuos hasta despes de cierto tiepo en caso de que quieran cancelar la compra
+
+
+# Cosas que me faltan CRUD y consultas para la base Autos
+# Funciones para actualizar cada tabla (tengo que hacer uno de cada metodo)
+# Funciones para tablas clientes
 
 dns = "postgresql://santi:NfWdr3CRaZ9q3qZhazSVltB0dW3qQ52W@dpg-d13hpvggjchc73cb6fj0-a.ohio-postgres.render.com/bd_productos"
 conexionViajes = psycopg2.connect(dns)
 cursor = conexionViajes.cursor()
 
+# Convierte la respuesta de la tabla viaje simple (TVS) a diccionario
 
-# --- Normalizacion de datos ---
-# Datos de viajes simples
+
 def convertirDatosTVS(respuesta):
 
     registroListas = []
@@ -33,15 +45,17 @@ def convertirDatosTVS(respuesta):
                 "Cupos": item[9],
                 "Duracion": item[10],
                 "Tipo_de_viaje": item[11],
+                "Estado": item[12],
             }
         )
+
         # dicConvertido.append()
         registroListas.append(dicConvertido)
 
     return registroListas
 
 
-# Datos de paquetes de viajes
+# Convierte la respuesta de la tabla paquete de viajes (TVS) a diccionario
 def convertirDatosTPV(respuesta):
     registroListas = []
     for item in respuesta:
@@ -65,6 +79,7 @@ def convertirDatosTPV(respuesta):
                 "Tipo_de_viaje": item[10],
                 "Hora": hora,
                 "Fecha": fecha,
+                "Estado": item[13],
             }
         )
 
@@ -72,18 +87,15 @@ def convertirDatosTPV(respuesta):
     return registroListas
 
 
-# --- CRUD Viajes ---
-# Viaje simple
 def verViajesSimples():
+
     cursor.execute("SELECT * FROM viaje_simple")
     respuesta = cursor.fetchall()
-
     nrepuesta = convertirDatosTVS(respuesta)
 
     return nrepuesta
 
 
-# Paquetes de viaje
 def verPaquetedeViajes():
     cursor.execute("SELECT * FROM paquete_de_viajes")
     respuesta = cursor.fetchall()
@@ -93,16 +105,34 @@ def verPaquetedeViajes():
     return nrepuesta
 
 
-# Funcion especifica ver excursiones dw un viaje en especifico
-def verExcursiones(codigoViaje):
-    cursor.execute("SELECT * FROM excursiones WHERE ID")
+"""def verExcursiones(codigoViaje):
+    #Preguntar a santi si la tabla excursiones no tiene que tener un campo que sea codigo de viaje al que esta anclado
+    #Hay que revisar esta funcion porque codigo de viaje no existe la tabla excursiones
+    cursor.execute("SELECT * FROM excursiones WHERE codigodeviaje = %s", (codigoDeViaje))
+    respuesta = cursor.fetchall()
+    excursionDic = []
+    excursionDic.append({
+
+                        "Excursion ID": respuesta[0],
+                         "Nombre": respuesta[1],
+                         "Inicio": respuesta[2],
+                         "Final": respuesta[3]
+    })
+
+    return(excursionDic)"""
+
+
+# Supongamos que se quiera hacer una compra de boleto
+# Primero se debe hacer una verificacion si existe ese usuario
+# Recibe el codigo de viaje que ha seleccionado el usuario.
+# Para tabla de viajes simple
 
 
 def restarCupoTVS(codigoViaje, cantidad):
-    cursor.execute("SELECT cupo FROM viaje_simple WHERE codigo = %s", (codigoViaje))
+    cursor.execute("SELECT cupos FROM viaje_simple WHERE codigo = %s", (codigoViaje,))
     ncupos = cursor.fetchall()
 
-    if codigoViaje > ncupos or codigoViaje == ncupos:
+    if cantidad < ncupos[0][0] or cantidad == ncupos[0][0]:
         cursor.execute(
             "UPDATE viaje_simple SET cupos = cupos - %s WHERE codigo = %s",
             (cantidad, codigoViaje),
@@ -119,13 +149,38 @@ def restarCupoTVS(codigoViaje, cantidad):
 
 # Para tabla de paquetes de viajes
 def restarCupoTPV(codigoViaje, cantidad):
-    cursor.execute(
-        "UPDATE paquete_de_viajes SET cupos = cupos - %s WHERE codigo = %s",
-        (cantidad, codigoViaje),
-    )
-    conexionViajes.commit()
 
-    return {"Mensaje": "Cupo decrementado"}
+    cursor.execute(
+        "SELECT cupos FROM paquete_de_viajes WHERE codigo = %s", (codigoViaje,)
+    )
+    ncupos = cursor.fetchall()
+
+    if cantidad < ncupos[0][0] or cantidad == ncupos[0][0]:
+        cursor.execute(
+            "UPDATE paquete_de_viajes SET cupos = cupos - %s WHERE codigo = %s",
+            (cantidad, codigoViaje),
+        )
+        conexionViajes.commit()
+
+        return {"Mensaje": "Cupo decrementado exitosamente"}
+
+    else:
+        return {
+            "Mensaje": "No quedan cupos disponibles o no hay para esa cantidad, no se puede realizar la compra"
+        }
+
+
+# Funcion Para hacer tipo date
+def convertirDate(fecha):
+    # La fecha debe estar pasada de esta manera 24/10/06
+    nfecha = datetime.strptime(fecha, "%d/%m/%y").date()
+    return nfecha
+
+
+def convertirHora(hora):
+    # La hora debe estar pasada de esta manera "10:00" como un string.
+    nhora = datetime.strptime(hora, "%H:%M").time()
+    return nhora
 
 
 # Metodo que solo aplicaria para el frontened del admin
@@ -142,9 +197,10 @@ def agregarViajeSimple(
     cupos,
     duracion_aprox,
     tipo_de_viaje,
+    estado,
 ):
     cursor.execute(
-        "INSERT INTO viaje_simple (codigo, nombre, descripcion, precio, origen, destino, transporte, fecha, hora, cupos, duracion_aprox, tipo_de_viaje) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+        "INSERT INTO viaje_simple (codigo, nombre, descripcion, precio, origen, destino, transporte, fecha, hora, cupos, duracion_aprox, tipo_de_viaje, estado) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
         (
             codigo,
             nombre,
@@ -158,8 +214,11 @@ def agregarViajeSimple(
             cupos,
             duracion_aprox,
             tipo_de_viaje,
+            estado,
         ),
     )
+    hora = convertirHora(hora)
+    fecha = convertirDate(fecha)
     conexionViajes.commit()
 
     return {"Mensaje": "Nuevo viaje simple agregado"}
@@ -180,9 +239,12 @@ def agregarPaquetedeViaje(
     tipo_de_viaje,
     hora,
     fecha,
+    estado,
 ):
+    hora = convertirHora(hora)
+    fecha = convertirDate(fecha)
     cursor.execute(
-        "INSERT INTO paquete_de_viajes (codigo, nombre, precio, origen, destino, estadia, tipo, descripcion, cupos, duracion, tipo_de_viaje, hora, fecha) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        "INSERT INTO paquete_de_viajes (codigo, nombre, precio, origen, destino, estadia, tipo, descripcion, cupos, duracion, tipo_de_viaje, hora, fecha) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         (
             codigo,
             nombre,
@@ -197,31 +259,35 @@ def agregarPaquetedeViaje(
             tipo_de_viaje,
             hora,
             fecha,
+            estado,
         ),
     )
     conexionViajes.commit()
-    # --------- Revisar porque esta incopleta hay que ver que metodos usar para ingresar excursiones --------
 
     return {"Mensaje": "Nuevo viaje simple agregado"}
 
 
 def quitarViajesimple(codigoDeViaje):
-    cursor.execute("DELETE * FROM viaje_simple WHERE codigo = %s", (codigoDeViaje))
+    cursor.execute("DELETE FROM viaje_simple WHERE codigo = %s", (codigoDeViaje,))
     conexionViajes.commit()
 
     return {"Mensaje": "Viaje borrado exitosamente"}
 
 
 def quitarPaquetedeViaje(codigoDeViaje):
-    cursor.execute("DELETE * FROM paquete_de_viaje WHERE codigo = %s", (codigoDeViaje))
+    cursor.execute("DELETE FROM paquete_de_viajes WHERE codigo = %s", (codigoDeViaje,))
     conexionViajes.commit()
 
     return {"Mensaje": "Viaje borrado exitosamente"}
 
 
 # Hacer una funcion que verifique constantemente que los viajes no tenga 0 cupos porque si es 0 eliminamos el registro de la bd, siempre se ejuctaria i guess
+# Podriamos agregar un campo que sea "Estado" y pongo si esta disponible o no
+# Sirve asi no tendriamos que eliminar los viajes cuando cupos llegue a 0 si no que simplemente lo pasamos aa un estado no disponible.
+
+
 def consultarCuposTVS(codigoViaje):
-    cursor.execute("SELECT cupo FROM viaje_simple WHERE codigo = %s", (codigoViaje))
+    cursor.execute("SELECT cupo FROM viaje_simple WHERE codigo = %s", (codigoViaje,))
     ncupos = cursor.fetchall()
 
     if ncupos == 0:
@@ -243,19 +309,15 @@ def consultarCuposTPV(codigoViaje):
         return {"Mensaje": "Sigue con cupos disponibles."}
 
 
-# Funcion Para hacer tipo dae
-def convertirDate(fecha):
-    # 24/10/2006
-    nfecha = datetime.strptime(fecha, "%d/%m/%y").date()
-    return nfecha
+def verExcursiones(codigoViaje):
+    cursor.execute("SELECT FROM pv_exc WHERE pv_id = %s", (codigoViaje,))
+    respuesta1 = cursor.fetchall()
 
 
-def convertirHora(hora):
-    # La hora debe estar pasada de esta manera "10:00" como un string.
-    nhora = datetime.strptime(hora, "%H:%M").time()
-    return nhora
+# cursor.execute("INSERT INTO pv_exc (pv_id, exc_id)")
 
 
+# Esto lo dejo por si tengo que cargar mas datos desde aca
 """agregarViajeSimple(672822248,"Cordoba", "Viaje rapido a Cordoba", 30000, "Puerto Madero", "Cordoba", "Autobus", convertirDate("2/11/25"), convertirHora("9:00") , 50, "1 dia" , "Ida")
 agregarPaquetedeViaje(7515, "Vacaciones a Italia", 90000, "Buenos Aires, Aeropuerto", "Italia" ,"10 dias en Italia, hotel Libertador servicio todo incluido", "Ida y Vuelta", "Viaje ideal para viaje solitario, para conocer nuevos paises", 70, "2 dias","Internacional",convertirHora("22:00"), convertirDate("10/11/25"))
 
@@ -265,37 +327,3 @@ agregarPaquetedeViaje(715, "Vacaciones a Brasil", 10000, "Buenos Aires, Aeropuer
 agregarViajeSimple(6777848,"Marruecos", "Viaje rapido a Marruecos", 20000, "Buenos Aires, Aeropuerto", "Marruecos", "Avion", convertirDate("2/11/25"), convertirHora("9:00") , 50, "2 dias" , "Ida")
 agregarPaquetedeViaje(7500, "Vacaciones a Haiti", 90000, "Buenos Aires, Aeropuerto", "Haiti" ,"10 dias en Haiti, hotel Libertador servicio todo incluido", "Ida y Vuelta", "Viaje ideal para viaje solitario, para conocer nuevos paises", 70, "2 dias","Internacional",convertirHora("22:00"), convertirDate("10/11/25"))
 #codigo, nombre, precio, origen, destino, estadia, tipo, descripcion, cupos, duracion, tipo_de_viaje, hora, fecha"""
-
-"""print(convertirHora("10:00"))
-print(convertirDate("24/10/06"))"""
-
-
-# quitarPaquetedeViaje(2455)
-
-"""r = verViajesSimples()
-print(r[2])
-#print(verPaquetedeViajes())"""
-r = verPaquetedeViajes()
-print(r)
-
-
-"""cursor.execute("SELECT fecha, hora FROM paquete_de_viajes")
-respuesta = cursor.fetchall()"""
-
-# print(respuesta[0][0])
-"""cursor.execute("SELECT * FROM paquete_de_viajes")
-respuesta = cursor.fetchall()
-registrosLista = []
-for registro in respuesta:
-    #print("------------ registro 1 -----")
-    diccionario = {"codigo": registro[0], "Nombre": registro[1]}
-    for item in registro:
-        print(item)
-        print("$$$$$")
-print(diccionario)"""
-
-
-# print(respuesta(1))
-
-
-# print(convertirHora("22:00"), convertirDate("10/11/25"))
