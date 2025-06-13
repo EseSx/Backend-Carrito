@@ -18,7 +18,7 @@ def agregarAuto(data):
     cur = conn.cursor()
     try:
         cur.execute(
-            "INSERT INTO autos (modelo, disponibles, precio_por_dia) VALUES(%s,%s,%s)",
+            "INSERT INTO auto (modelo, disponibles, precio_por_dia) VALUES(%s,%s,%s)",
             (data.modelo, data.disponibles, data.precio_por_dia),
         )
         conn.commit()
