@@ -37,14 +37,14 @@ def agregarAuto(data):
         conn.close()
 
 
-def borrarAuto(auto_id):
+def borrarAuto(data):
     """
     Elimina un auto de la tabla 'autos' por su ID.
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("DELETE FROM autos WHERE auto_id = %s", (auto_id,))
+        cur.execute("DELETE FROM autos WHERE auto_id = %s", (data.auto_id,))
 
         return {"Mensaje": "Auto eliminado exitosamente"}
     except Exception as e:
