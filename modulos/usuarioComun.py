@@ -17,16 +17,25 @@ def crearCliente(data):
     conn = get_connection()
     cur = conn.cursor()
     try:
+        cur.execute("SELECT MAX(uc_id) FROM usuario_comun")
+        max_id = cur.fetchone()
+
         cur.execute(
-            "INSERT INTO usuario_comun (nombre, apellido, contraseña, correo_electronico) VALUES(%s,%s,%s,%s)",
-            (data.nombre, data.apellido, data.contraseña, data.correo_electronico),
+            "INSERT INTO usuario_comun (uc_id, nombre, apellido, contraseña, correo_electronico) VALUES(%s,%s,%s,%s,%s)",
+            (
+                max_id,
+                data.nombre,
+                data.apellido,
+                data.contraseña,
+                data.correo_electronico,
+            ),
         )
         conn.commit()
 
         return {"Mensaje": "Se ha cargado un nuevo cliente"}
     except Exception as e:
         conn.rollback()
-        return {"error": str(e)}
+        return {"error": str(e), "maxid": max_id}
     finally:
         cur.close()
         conn.close()
