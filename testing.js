@@ -13,6 +13,7 @@
 
 // ---- Ingresar ----
 // <form id="formularioIngresarAutos">
+//   <input type="number" name="id" />
 //   <input type="text" name="modelo" />
 //   <input type="number" name="disponibles" min="0" />
 //   <input type="number" step="any" name="precio_por_dia" min="0" />
@@ -31,9 +32,10 @@
 //   let data = Object.fromEntries(formData);
 //   // El contenido de data va a ser un diccionario, formado por los name de cada input como claves, y con los propios valores que se les hayan ingresado
 //   // Este data se veria asi:
-//   // {modelo: ..., disponibles: ..., precio_por_dia: ...}
+//   // {id: ..., modelo: ..., disponibles: ..., precio_por_dia: ...}
 
 //   // Para terminar de normalizar convertimos los valores al formato requerido
+//   data.id = parseInt(data.id);
 //   data.disponibles = parseInt(data.disponibles);
 //   data.precio_por_dia = parseFloat(data.precio_por_dia);
 
@@ -48,7 +50,13 @@
 //     .then((res) => console.log(res));
 // });
 
-let data = { modelo: "auto", disponibles: "2", precio_por_dia: "250.50" };
+let data = {
+  id: "4",
+  modelo: "auto",
+  disponibles: "2",
+  precio_por_dia: "250.50",
+};
+data.id = parseInt(data.id);
 data.disponibles = parseInt(data.disponibles);
 data.precio_por_dia = parseFloat(data.precio_por_dia);
 

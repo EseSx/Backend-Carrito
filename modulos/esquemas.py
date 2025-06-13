@@ -68,6 +68,7 @@ class Auto(BaseModel):
     Modelo Pydantic para representar un auto disponible para alquiler.
     """
 
+    auto_id: int
     modelo: str
     disponibles: int
     precio_por_dia: float
