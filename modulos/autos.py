@@ -147,16 +147,16 @@ def verAutoPV(data):
     try:
         cur.execute("SELECT * FROM exc_at WHERE pv_id = %s", (data.pv_id,))
         respuesta = cur.fetchall()
-        autos = []
-        autoInfo = []
-        for i in respuesta[0]:
-            autos.append(respuesta)
-            print(respuesta)
-        for auto in autos:
-            r = verAutoID(auto)
-            autoInfo.append(r)
+        # autos = []
+        # autoInfo = []
+        # for i in respuesta[0]:
+        #     autos.append(respuesta)
+        #     print(respuesta)
+        # for auto in autos:
+        #     r = verAutoID(auto)
+        #     autoInfo.append(r)
 
-        return autoInfo
+        return respuesta
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
