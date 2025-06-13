@@ -2,7 +2,7 @@
 #   Conexión con la Base de Datos
 # ===============================
 
-from main import cursor
+from main import get_connection
 
 
 # ===============================
@@ -15,13 +15,22 @@ def agregarExcursiones(data):
     """
     Inserta una nueva excursión en la base de datos.
     """
-    cursor.execute(
-        "INSERT INTO excursiones (nombre, inicio, final, descripcion, lugar) VALUES(%s,%s,%s,%s,%s)",
-        (data.nombre, data.inicio, data.final, data.descripcion, data.lugar),
-    )
-    cursor.commit()
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO excursiones (nombre, inicio, final, descripcion, lugar) VALUES(%s,%s,%s,%s,%s)",
+            (data.nombre, data.inicio, data.final, data.descripcion, data.lugar),
+        )
+        conn.commit()
 
-    return {"Mensaje": "Se ha agregado la excursion exitosamente"}
+        return {"Mensaje": "Se ha agregado la excursion exitosamente"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ---- Eliminar Excursión ----
@@ -29,10 +38,19 @@ def eliminarExcursion(excursion_id):
     """
     Elimina una excursión por su ID.
     """
-    cursor.execute("DELETE FROM excursiones WHERE excursion_id = %s", (excursion_id,))
-    cursor.commit()
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM excursiones WHERE excursion_id = %s", (excursion_id,))
+        conn.commit()
 
-    return {"Mensaje": "Borrado exitosamente"}
+        return {"Mensaje": "Borrado exitosamente"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ===============================
@@ -44,10 +62,21 @@ def paqueteViajesExcursion(pv_id, exc_id):
     """
     Vincula una excursión con un paquete de viajes.
     """
-    cursor.execute("INSERT INTO pv_exc (pv_id, exc_id) VALUES (%s,%s)", (pv_id, exc_id))
-    cursor.commit()
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO pv_exc (pv_id, exc_id) VALUES (%s,%s)", (pv_id, exc_id)
+        )
+        conn.commit()
 
-    return {"Mensaje": "Se ha vinculado una excursion con un paquete de viajes"}
+        return {"Mensaje": "Se ha vinculado una excursion con un paquete de viajes"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ===============================

@@ -2,7 +2,7 @@
 #   Conexión con la Base de Datos
 # ===============================
 
-from main import get_connection, cursor, conexion
+from main import get_connection
 
 
 # ===============================
@@ -36,9 +36,18 @@ def borrarAuto(auto_id):
     """
     Elimina un auto de la tabla 'autos' por su ID.
     """
-    cursor.execute("DELETE FROM autos WHERE auto_id = %s", (auto_id,))
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM autos WHERE auto_id = %s", (auto_id,))
 
-    return {"Mensaje": "Auto eliminado exitosamente"}
+        return {"Mensaje": "Auto eliminado exitosamente"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ===============================
@@ -50,20 +59,37 @@ def vinculaVSaAuto(vs_id, at_id):
     """
     Vincula un auto (at_id) a un viaje simple (vs_id).
     """
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("INSERT INTO vs_at (vs_id, at_id) VALUES(%s,%s)", (vs_id, at_id))
+        conn.commit()
 
-    cursor.execute("INSERT INTO vs_at (vs_id, at_id) VALUES(%s,%s)", (vs_id, at_id))
-    conexion.commit()
-
-    return {"Mensaje": "Se ha asignado un auto a un viaje simple"}
+        return {"Mensaje": "Se ha asignado un auto a un viaje simple"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 def vincularPVaAuto(pv_id, at_id):
     """
     Vincula un auto (at_id) a un paquete de viajes (pv_id).
     """
-    cursor.execute("INSERT INTO exc_at (pv_id, at_id) VALUES(%s,%s)", (pv_id, at_id))
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("INSERT INTO exc_at (pv_id, at_id) VALUES(%s,%s)", (pv_id, at_id))
 
-    return {"Mensaje": "Se ha asignado un auto a un paquete de viajes"}
+        return {"Mensaje": "Se ha asignado un auto a un paquete de viajes"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ===============================
@@ -75,47 +101,74 @@ def verAutoID(auto_id):
     """
     Devuelve la información de un auto por su ID.
     """
-    cursor.execute("SELECT * FROM auto WHERE auto_Id = %s", (auto_id,))
-    respuesta = cursor.fetchall()
-    respuesta = {
-        "auto id": respuesta[0][0],
-        "modelo": respuesta[0][1],
-        "disponibles": respuesta[0][2],
-        "precio por dia": respuesta[0][3],
-    }
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM auto WHERE auto_Id = %s", (auto_id,))
+        respuesta = cur.fetchall()
+        respuesta = {
+            "auto id": respuesta[0][0],
+            "modelo": respuesta[0][1],
+            "disponibles": respuesta[0][2],
+            "precio por dia": respuesta[0][3],
+        }
 
-    return respuesta
+        return respuesta
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 def verAutoPV(pv_id):
     """
     Devuelve todos los autos vinculados a un paquete de viajes.
     """
-    cursor.execute("SELECT * FROM exc_at WHERE pv_id = %s", (pv_id,))
-    respuesta = cursor.fetchall()
-    autos = []
-    autoInfo = []
-    for i in respuesta[0]:
-        autos.append(respuesta[1][1])
-    for auto in autos:
-        r = verAutoID(auto)
-        autoInfo.append(r)
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM exc_at WHERE pv_id = %s", (pv_id,))
+        respuesta = cur.fetchall()
+        autos = []
+        autoInfo = []
+        for i in respuesta[0]:
+            autos.append(respuesta[1][1])
+        for auto in autos:
+            r = verAutoID(auto)
+            autoInfo.append(r)
 
-    return autoInfo
+        return autoInfo
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 def verAutoVs(vs_id):
     """
     Devuelve todos los autos vinculados a un viaje simple.
     """
-    cursor.execute("SELECT * FROM vs_at WHERE vs_id = %s", (vs_id,))
-    respuesta = cursor.fetchall()
-    autos = []
-    autoInfo = []
-    for i in respuesta[0]:
-        autos.append(respuesta[1][1])
-    for auto in autos:
-        r = verAutoID(auto)
-        autoInfo.append(r)
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM vs_at WHERE vs_id = %s", (vs_id,))
+        respuesta = cur.fetchall()
+        autos = []
+        autoInfo = []
+        for i in respuesta[0]:
+            autos.append(respuesta[1][1])
+        for auto in autos:
+            r = verAutoID(auto)
+            autoInfo.append(r)
 
-    return autoInfo
+        return autoInfo
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()

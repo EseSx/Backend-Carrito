@@ -1,9 +1,5 @@
 # --- Importar conexión a la base de datos ---
-from main import cursor, conexion
-
-# --- Importar funciones relacionadas ---
-from modulos.viajeSimple import quitarViajesimple
-from modulos.paqueteDeViajes import quitarPaquetedeViaje
+from main import get_connection
 
 # ============================
 #   Funciones para Viaje Simple
@@ -15,45 +11,65 @@ def consultarCuposTVS(codigoViaje):
     Verifica la cantidad de cupos disponibles para un viaje simple.
     Si no hay cupos, cambia el estado a 'No disponible'.
     """
-    cursor.execute("SELECT cupos FROM viaje_simple WHERE codigo = %s", (codigoViaje,))
-    resultado = cursor.fetchone()
-    cupos = resultado[0]
+    conn = get_connection()
+    cur = conn.cursor()
 
-    if cupos == 0:
-        cursor.execute(
-            "UPDATE viaje_simple SET estado = %s WHERE codigo = %s",
-            ("No disponible", codigoViaje),
-        )
-        cursor.commit()
-        return {"Mensaje": "Ya no tiene cupos disponibles."}
-    else:
-        cursor.execute(
-            "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
-            ("disponible", codigoViaje),
-        )
-        return {"Mensaje": "Sigue con cupos disponibles."}
+    try:
+        cur.execute("SELECT cupos FROM viaje_simple WHERE codigo = %s", (codigoViaje,))
+        resultado = cur.fetchone()
+        cupos = resultado[0]
+
+        if cupos == 0:
+            cur.execute(
+                "UPDATE viaje_simple SET estado = %s WHERE codigo = %s",
+                ("No disponible", codigoViaje),
+            )
+            conn.commit()
+            return {"Mensaje": "Ya no tiene cupos disponibles."}
+        else:
+            cur.execute(
+                "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
+                ("disponible", codigoViaje),
+            )
+            conn.commit()
+            return {"Mensaje": "Sigue con cupos disponibles."}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 def restarCupoTVS(codigoViaje, cantidad):
     """
     Descuenta cupos de un viaje simple si hay suficientes disponibles.
     """
-    cursor.execute("SELECT cupos FROM viaje_simple WHERE codigo = %s", (codigoViaje,))
-    ncupos = cursor.fetchall()
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT cupos FROM viaje_simple WHERE codigo = %s", (codigoViaje,))
+        ncupos = cur.fetchall()
 
-    if cantidad < ncupos[0][0] or cantidad == ncupos[0][0]:
-        cursor.execute(
-            "UPDATE viaje_simple SET cupos = cupos - %s WHERE codigo = %s",
-            (cantidad, codigoViaje),
-        )
-        conexion.commit()
+        if cantidad < ncupos[0][0] or cantidad == ncupos[0][0]:
+            cur.execute(
+                "UPDATE viaje_simple SET cupos = cupos - %s WHERE codigo = %s",
+                (cantidad, codigoViaje),
+            )
+            conn.commit()
 
-        return {"Mensaje": "Cupo decrementado exitosamente"}
+            return {"Mensaje": "Cupo decrementado exitosamente"}
 
-    else:
-        return {
-            "Mensaje": "No quedan cupos disponibles, no se puede realizar la compra"
-        }
+        else:
+            return {
+                "Mensaje": "No quedan cupos disponibles, no se puede realizar la compra"
+            }
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # =============================
@@ -66,46 +82,64 @@ def consultarCuposTPV(codigoViaje):
     Verifica la cantidad de cupos disponibles para un paquete de viajes.
     Si no hay cupos, cambia el estado a 'No disponible'.
     """
-    cursor.execute(
-        "SELECT cupos FROM paquete_de_viajes WHERE codigo = %s", (codigoViaje,)
-    )
-    resultado = cursor.fetchone()
-    cupos = resultado[0]
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "SELECT cupos FROM paquete_de_viajes WHERE codigo = %s", (codigoViaje,)
+        )
+        resultado = cur.fetchone()
+        cupos = resultado[0]
 
-    if cupos == 0:
-        cursor.execute(
-            "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
-            ("No disponible", codigoViaje),
-        )
-        conexion.commit()
-        return {"Mensaje": "Ya no tiene cupos disponibles."}
-    else:
-        cursor.execute(
-            "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
-            ("disponible", codigoViaje),
-        )
-        return {"Mensaje": "Sigue con cupos disponibles."}
+        if cupos == 0:
+            cur.execute(
+                "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
+                ("No disponible", codigoViaje),
+            )
+            conn.commit()
+            return {"Mensaje": "Ya no tiene cupos disponibles."}
+        else:
+            cur.execute(
+                "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
+                ("disponible", codigoViaje),
+            )
+            return {"Mensaje": "Sigue con cupos disponibles."}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 def restarCupoTPV(codigoViaje, cantidad):
     """
     Descuenta cupos de un paquete de viajes si hay suficientes disponibles.
     """
-    cursor.execute(
-        "SELECT cupos FROM paquete_de_viajes WHERE codigo = %s", (codigoViaje,)
-    )
-    ncupos = cursor.fetchall()
-
-    if cantidad < ncupos[0][0] or cantidad == ncupos[0][0]:
-        cursor.execute(
-            "UPDATE paquete_de_viajes SET cupos = cupos - %s WHERE codigo = %s",
-            (cantidad, codigoViaje),
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "SELECT cupos FROM paquete_de_viajes WHERE codigo = %s", (codigoViaje,)
         )
-        conexion.commit()
+        ncupos = cur.fetchall()
 
-        return {"Mensaje": "Cupo decrementado exitosamente"}
+        if cantidad < ncupos[0][0] or cantidad == ncupos[0][0]:
+            cur.execute(
+                "UPDATE paquete_de_viajes SET cupos = cupos - %s WHERE codigo = %s",
+                (cantidad, codigoViaje),
+            )
+            conn.commit()
 
-    else:
-        return {
-            "Mensaje": "No quedan cupos disponibles o no hay para esa cantidad, no se puede realizar la compra"
-        }
+            return {"Mensaje": "Cupo decrementado exitosamente"}
+
+        else:
+            return {
+                "Mensaje": "No quedan cupos disponibles o no hay para esa cantidad, no se puede realizar la compra"
+            }
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()

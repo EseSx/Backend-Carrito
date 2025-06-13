@@ -13,7 +13,7 @@
 
 // ---- Ingresar ----
 // <form id="formularioIngresarAutos">
-//   <input type="number" name="id" />
+//   <input type="number" name="auto_id" />
 //   <input type="text" name="modelo" />
 //   <input type="number" name="disponibles" min="0" />
 //   <input type="number" step="any" name="precio_por_dia" min="0" />
@@ -32,31 +32,38 @@
 //   let data = Object.fromEntries(formData);
 //   // El contenido de data va a ser un diccionario, formado por los name de cada input como claves, y con los propios valores que se les hayan ingresado
 //   // Este data se veria asi:
-//   // {id: ..., modelo: ..., disponibles: ..., precio_por_dia: ...}
+//   // {auto_id: ..., modelo: ..., disponibles: ..., precio_por_dia: ...}
 
 //   // Para terminar de normalizar convertimos los valores al formato requerido
 //   data.id = parseInt(data.id);
 //   data.disponibles = parseInt(data.disponibles);
 //   data.precio_por_dia = parseFloat(data.precio_por_dia);
 
-//   fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(data),
+// fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
+//   method: "POST",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   body: JSON.stringify(data),
+// })
+//   .then(async (res) => {
+//     if (!res.ok) {
+//       const errorText = await res.text();
+//       throw new Error(`Server error: ${res.status} ${errorText}`);
+//     }
+//     return res.json();
 //   })
-//     .then((res) => res.json())
-//     .then((res) => console.log(res));
-// });
+//   .then((res) => console.log(res))
+//   .catch(console.error);
 
 let data = {
-  id: "4",
+  auto_id: "4",
   modelo: "auto",
   disponibles: "2",
   precio_por_dia: "250.50",
 };
-data.id = parseInt(data.id);
+
+data.auto_id = parseInt(data.auto_id);
 data.disponibles = parseInt(data.disponibles);
 data.precio_por_dia = parseFloat(data.precio_por_dia);
 
