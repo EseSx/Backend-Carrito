@@ -32,9 +32,9 @@ import psycopg
 # URL de conexión a la base de datos PostgreSQL
 hostURL = "postgresql://santi:NfWdr3CRaZ9q3qZhazSVltB0dW3qQ52W@dpg-d13hpvggjchc73cb6fj0-a.ohio-postgres.render.com/bd_productos"
 
-conexion = psycopg.connect(hostURL)
 
-cursor = conexion.cursor()
+def get_connection():
+    return psycopg.connect(hostURL)
 
 
 # ==============================================

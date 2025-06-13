@@ -61,4 +61,4 @@ fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
 })
   .then((res) => res.json())
   .then((res) => console.log(res))
-  .catch(Error);
+  .catch(console.error);

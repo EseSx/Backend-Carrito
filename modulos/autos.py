@@ -2,7 +2,7 @@
 #   Conexión con la Base de Datos
 # ===============================
 
-from main import cursor, conexion
+from main import get_connection
 
 
 # ===============================
@@ -14,13 +14,22 @@ def agregarAuto(data):
     """
     Inserta un nuevo auto en la tabla 'autos'.
     """
-    cursor.execute(
-        "INSERT INTO autos (modelo, disponibles, precio_por_dia) VALUES(%s,%s,%s)",
-        (data.modelo, data.disponibles, data.precio_por_dia),
-    )
-    conexion.commit()
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO autos (modelo, disponibles, precio_por_dia) VALUES(%s,%s,%s)",
+            (data.modelo, data.disponibles, data.precio_por_dia),
+        )
+        conn.commit()
 
-    return {"mensaje": "Nuevo auto cargado exitosamente"}
+        return {"mensaje": "Nuevo auto cargado exitosamente"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close
 
 
 def borrarAuto(auto_id):
