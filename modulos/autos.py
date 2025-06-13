@@ -79,7 +79,7 @@ def vinculaVSaAuto(data):
         return {"Mensaje": "Se ha asignado un auto a un viaje simple"}
     except Exception as e:
         conn.rollback()
-        return {"error": str(e), "mg": data.vs_id}
+        return {"error": str(e)}
     finally:
         cur.close()
         conn.close()
