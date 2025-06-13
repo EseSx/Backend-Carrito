@@ -56,7 +56,7 @@ async def ingresar_vinculos_PV(data: VinculoPVaAuto):
 
 
 # ---- Obtener lista de autos ----
-@router.get("/obtenerID")
+@router.post("/obtenerID")
 async def retornar_autosPorID(data: AutoID):
     """
     Devuelve la lista de autos almacenados (pendiente implementación).
