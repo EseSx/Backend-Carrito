@@ -89,6 +89,15 @@ class VinculoVSaAuto(BaseModel):
     at_id: int
 
 
+class VinculoPVaAuto(BaseModel):
+    """
+    Modelo Pydantic para representar el vinculo de un viaje simple a un auto
+    """
+
+    pv_id: int
+    at_id: int
+
+
 class Excursiones(BaseModel):
     """
     Modelo Pydantic para representar una excursión.

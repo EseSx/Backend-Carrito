@@ -10,14 +10,14 @@ router = APIRouter()
 #         Importación de CRUD
 # ===============================
 
-from modulos.autos import agregarAuto, borrarAuto, vinculaVSaAuto
+from modulos.autos import agregarAuto, borrarAuto, vinculaVSaAuto, vincularPVaAuto
 
 
 # ===============================
 #         Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Auto, AutoID, VinculoVSaAuto
+from modulos.esquemas import Auto, AutoID, VinculoVSaAuto, VinculoPVaAuto
 
 
 # ===============================
@@ -39,6 +39,13 @@ async def ingresar_autos(data: Auto):
 @router.post("/ingresarVinculoVS")
 async def ingresar_vinculos_VS(data: VinculoVSaAuto):
     res = vinculaVSaAuto(data)
+    return res
+
+
+# ---- Crear nueva relacion de paquete de viaje a auto ----
+@router.post("/ingresarVinculoPV")
+async def ingresar_vinculos_PV(data: VinculoPVaAuto):
+    res = vincularPVaAuto(data)
     return res
 
 

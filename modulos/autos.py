@@ -63,7 +63,7 @@ def borrarAuto(data):
 # ===============================
 
 
-# PENDIENTE
+# ANDA
 def vinculaVSaAuto(data):
     """
     Vincula un auto (at_id) a un viaje simple (vs_id).
@@ -85,14 +85,17 @@ def vinculaVSaAuto(data):
         conn.close()
 
 
-def vincularPVaAuto(pv_id, at_id):
+# PENDIENTE
+def vincularPVaAuto(data):
     """
     Vincula un auto (at_id) a un paquete de viajes (pv_id).
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("INSERT INTO exc_at (pv_id, at_id) VALUES(%s,%s)", (pv_id, at_id))
+        cur.execute(
+            "INSERT INTO exc_at (pv_id, at_id) VALUES(%s,%s)", (data.pv_id, data.at_id)
+        )
 
         return {"Mensaje": "Se ha asignado un auto a un paquete de viajes"}
     except Exception as e:
