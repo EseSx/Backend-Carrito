@@ -85,10 +85,10 @@
 // export default FormularioIngresarCliente;
 
 let data = {
-  auto_id: 2,
+  pv_id: 755,
 };
 
-fetch("https://backend-carrito-filb.vercel.app/autos/obtenerID", {
+fetch("https://backend-carrito-filb.vercel.app/autos/obtenerPV", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

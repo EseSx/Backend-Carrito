@@ -145,12 +145,13 @@ def verAutoPV(data):
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT * FROM exc_at WHERE pv_id = %s", (data.pv_id,))
+        cur.execute("SELECT at_id FROM exc_at WHERE pv_id = %s", (data.pv_id,))
         respuesta = cur.fetchall()
         autos = []
         autoInfo = []
         for i in respuesta[0]:
-            autos.append(respuesta[1][1])
+            autos.append(respuesta)
+            print(respuesta)
         for auto in autos:
             r = verAutoID(auto)
             autoInfo.append(r)
