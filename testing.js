@@ -88,7 +88,7 @@ let data = {
   pv_id: 755,
 };
 
-fetch("https://backend-carrito-filb.vercel.app/autos/obtenerPV", {
+fetch("http://0.0.0.0:8000/autos/obtenerPV", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
