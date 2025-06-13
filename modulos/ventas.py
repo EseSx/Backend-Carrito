@@ -54,7 +54,7 @@ from controladores.date import convertirDate, convertirHora
 
 
 # ---- Crear nueva venta ----
-def sumarVenta(data):
+def sumarVenta(data, correo_electronico):
     """
     Inserta una nueva venta en la tabla ventas, con formato adecuado para fecha y hora.
     """
@@ -77,6 +77,38 @@ def sumarVenta(data):
                 data.precio,
             ),
         )
+
+        cur.execute(
+            "SELECT uc_id FROM usuario_comun WHERE correo_electronico = %s",
+            (correo_electronico),
+        )
+        uc_id = cur.fetchone()
+        uc_id = int(uc_id)
+
+        cur.execute("SELECT MAX(auto_id) FROM auto")
+        vtas_id = cur.fetchone()
+        vtas_id = int(vtas_id[0]) + 1
+
+        cur.execute(
+            "INSERT INTO vtas_uc (vtas_id, uc_id) VALUES(%s,%s)", (vtas_id, uc_id)
+        )
+
+        from controladores.cupos import (
+            restarCupoTPV,
+            restarCupoTVS,
+            consultarCuposTPV,
+            consultarCuposTVS,
+        )
+
+        if data.codigo_vs:
+            # Consultar cupos es por si llegara a 0 y hay que marcarle no disponible
+            restarCupoTVS(data.codigo_vs, data.cantidad)
+            consultarCuposTVS(data.codigo_vs)
+
+        else:
+            # Consultar cupos es por si llegara a 0 y hay que marcarle no disponible
+            restarCupoTPV(data.codigo_pv, data.cantidad)
+            consultarCuposTPV(data.codigo_pv)
         conn.commit()
 
         return {"Mensaje": "Venta sumada"}

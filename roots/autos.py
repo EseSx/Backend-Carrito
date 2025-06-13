@@ -10,14 +10,14 @@ router = APIRouter()
 #         Importación de CRUD
 # ===============================
 
-from modulos.autos import agregarAuto, borrarAuto
+from modulos.autos import agregarAuto, borrarAuto, vinculaVSaAuto
 
 
 # ===============================
 #         Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Auto, AutoID
+from modulos.esquemas import Auto, AutoID, VinculoVSaAuto
 
 
 # ===============================
@@ -25,7 +25,7 @@ from modulos.esquemas import Auto, AutoID
 # ===============================
 
 
-# ---- Crear nuevo auto ---- ANDA
+# ---- Crear nuevo auto ----
 @router.post("/ingresar")
 async def ingresar_autos(data: Auto):
     """
@@ -35,9 +35,16 @@ async def ingresar_autos(data: Auto):
     return res
 
 
+# ---- Crear nueva relacion de viaje simple a auto ----
+@router.post("/ingresarVinculoVS")
+async def ingresar_vinculos_VS(data: VinculoVSaAuto):
+    res = vinculaVSaAuto(VinculoVSaAuto)
+    return res
+
+
 # ---- Obtener lista de autos ----
 @router.get("/obtener")
-def retornar_autos():
+async def retornar_autos():
     """
     Devuelve la lista de autos almacenados (pendiente implementación).
     """
@@ -46,7 +53,7 @@ def retornar_autos():
 
 # ---- Modificar datos de un auto ----
 @router.post("/modificar")
-def modificar_autos():
+async def modificar_autos():
     """
     Actualiza los datos de un auto existente (pendiente implementación).
     """
@@ -55,7 +62,7 @@ def modificar_autos():
 
 # ---- Eliminar un auto por ID ----
 @router.post("/eliminar")
-def eliminar_autos(data: AutoID):
+async def eliminar_autos(data: AutoID):
     """
     Elimina un auto de la base de datos utilizando su ID.
     """

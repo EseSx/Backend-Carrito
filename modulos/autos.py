@@ -10,6 +10,7 @@ from main import get_connection
 # ===============================
 
 
+# ANDA
 def agregarAuto(data):
     """
     Inserta un nuevo auto en la tabla 'autos'.
@@ -37,6 +38,7 @@ def agregarAuto(data):
         conn.close()
 
 
+# ANDA
 def borrarAuto(data):
     """
     Elimina un auto de la tabla 'auto' por su ID.
@@ -47,7 +49,7 @@ def borrarAuto(data):
         cur.execute("DELETE FROM auto WHERE auto_id = %s", (data.auto_id,))
         conn.commit()
 
-        return {"Mensaje": "Auto eliminado exitosamente", "auto": data.auto_id}
+        return {"Mensaje": "Auto eliminado exitosamente"}
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
@@ -61,14 +63,17 @@ def borrarAuto(data):
 # ===============================
 
 
-def vinculaVSaAuto(vs_id, at_id):
+# PENDIENTE
+def vinculaVSaAuto(data):
     """
     Vincula un auto (at_id) a un viaje simple (vs_id).
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("INSERT INTO vs_at (vs_id, at_id) VALUES(%s,%s)", (vs_id, at_id))
+        cur.execute(
+            "INSERT INTO vs_at (vs_id, at_id) VALUES(%s,%s)", (data.vs_id, data.at_id)
+        )
         conn.commit()
 
         return {"Mensaje": "Se ha asignado un auto a un viaje simple"}

@@ -1,140 +1,94 @@
 // =============================
-//          IMPORTANTE
+//            IGNORAR
 // =============================
-// Voy a intentar explicar lo mas rapido y facil que pueda
-// Primero voy a crear los forms que vos vas a poder usar en react
-// Despues como se deben pasar esos datos, incluyendo normalizacion y todo
-// Y por ultimo el fetch
-// Si copias y pegas deberia andar
+// ---- Codigo de react ----
+//   import React, { useState } from "react";
 
-// =============================
-//             AUTOS
-// =============================
+// function FormularioIngresarCliente() {
+//   const [formData, setFormData] = useState({
+//     nombre: "",
+//     apellido: "",
+//     contraseña: "",
+//     correo_electronico: "",
+//   });
 
-// ---- Ingresar ----
-// <form id="formularioIngresarAutos">
-//   <input type="text" name="modelo" />
-//   <input type="number" name="disponibles" min="0" />
-//   <input type="number" step="any" name="precio_por_dia" min="0" />
-//   <button type="submit">Enviar</button>
-// </form>
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prev) => ({
+//       ...prev,
+//       [name]: value,
+//     }));
+//   };
 
-// const formularioIngresarAutos = document.getElementById(
-//   "formularioIngresarAutos"
-// );
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
 
-// formularioIngresarAutos.addEventListener("submit", (event) => {
-//   event.preventDefault();
+//     try {
+//       const res = await fetch(
+//         "https://backend-carrito-filb.vercel.app/clientes/ingresar",
+//         {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           body: JSON.stringify(formData),
+//         }
+//       );
 
-//   const formData = new FormData(formularioIngresarAutos);
+//       if (!res.ok) {
+//         const errorText = await res.text();
+//         throw new Error(`Server error: ${res.status} ${errorText}`);
+//       }
 
-//   let data = Object.fromEntries(formData);
-//   // El contenido de data va a ser un diccionario, formado por los name de cada input como claves, y con los propios valores que se les hayan ingresado
-//   // Este data se veria asi:
-//   // {modelo: ..., disponibles: ..., precio_por_dia: ...}
-
-//   // Para terminar de normalizar convertimos los valores al formato requerido
-//   data.disponibles = parseInt(data.disponibles);
-//   data.precio_por_dia = parseFloat(data.precio_por_dia);
-
-// fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
-//   method: "POST",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-//   body: JSON.stringify(data),
-// })
-//   .then(async (res) => {
-//     if (!res.ok) {
-//       const errorText = await res.text();
-//       throw new Error(`Server error: ${res.status} ${errorText}`);
+//       const result = await res.json();
+//       console.log(result);
+//     } catch (error) {
+//       console.error(error);
 //     }
-//     return res.json();
-//   })
-//   .then((res) => console.log(res))
-//   .catch(console.error);
+//   };
 
-// ---- Eliminar ----
-// <form id="formularioEliminarAutos">
-//   <input type="text" name="auto_id" />
-//   <button type="submit">Enviar</button>
-// </form>
+//   return (
+//     <form onSubmit={handleSubmit}>
+//       <input
+//         type="text"
+//         name="nombre"
+//         value={formData.nombre}
+//         onChange={handleChange}
+//         placeholder="Nombre"
+//       />
+//       <input
+//         type="text"
+//         name="apellido"
+//         value={formData.apellido}
+//         onChange={handleChange}
+//         placeholder="Apellido"
+//       />
+//       <input
+//         type="password"
+//         name="contraseña"
+//         value={formData.contraseña}
+//         onChange={handleChange}
+//         placeholder="Contraseña"
+//       />
+//       <input
+//         type="email"
+//         name="correo_electronico"
+//         value={formData.correo_electronico}
+//         onChange={handleChange}
+//         placeholder="Correo Electrónico"
+//       />
+//       <button type="submit">Enviar</button>
+//     </form>
+//   );
+// }
 
-// const formularioEliminarAutos = document.getElementById(
-//   "formularioEliminarAutos"
-// );
-
-// formularioEliminarAutos.addEventListener("submit", (event) => {
-//   event.preventDefault();
-
-//   const formData = new FormData(formularioEliminarAutos);
-
-//   let data = Object.fromEntries(formData);
-
-//   // Para terminar de normalizar convertimos los valores al formato requerido
-//   data.auto_id = parseInt(data.auto_id);
-
-// fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
-//   method: "POST",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-//   body: JSON.stringify(data),
-// })
-//   .then(async (res) => {
-//     if (!res.ok) {
-//       const errorText = await res.text();
-//       throw new Error(`Server error: ${res.status} ${errorText}`);
-//     }
-//     return res.json();
-//   })
-//   .then((res) => console.log(res))
-//   .catch(console.error);
-// =============================
-//           CLIENTES
-// =============================
-// ---- Ingresar ----
-// <form id="formularioIngresarCliente">
-//   <input type="text" name="nombre" />
-//   <input type="text" name="apellido" />
-//   <input type="password" name="contraseña" />
-//   <input type="email" name="correo_electronico" />
-//   <button type="submit">Enviar</button>
-// </form>
-
-// const formularioIngresarCliente = document.getElementById(
-//   "formularioIngresarCliente"
-// );
-
-// formularioIngresarCliente.addEventListener("submit", (event) => {
-//   event.preventDefault();
-
-//   const formData = new FormData(formularioIngresarCliente);
-
-//   let data = Object.fromEntries(formData);
-
-// fetch("https://backend-carrito-filb.vercel.app/clientes/ingresar", {
-//   method: "POST",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-//   body: JSON.stringify(data),
-// })
-//   .then(async (res) => {
-//     if (!res.ok) {
-//       const errorText = await res.text();
-//       throw new Error(`Server error: ${res.status} ${errorText}`);
-//     }
-//     return res.json();
-//   })
-//   .then((res) => console.log(res))
-//   .catch(console.error);
+// export default FormularioIngresarCliente;
 
 let data = {
   auto_id: 15,
 };
 
-fetch("https://backend-carrito-filb.vercel.app/autos/eliminar", {
+fetch("https://backend-carrito-filb.vercel.app/autos/ingresarVinculoVS", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
