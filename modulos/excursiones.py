@@ -88,42 +88,62 @@ def buscarExcursionporId(excursion_id):
     """
     Busca una excursión por su ID y devuelve sus detalles.
     """
-    cursor.execute("SELECT * FROM excursiones WHERE excursion_id = %s", (excursion_id,))
-    respuesta = cursor.fetchall()
-    dicExcursiones = []
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "SELECT * FROM excursiones WHERE excursion_id = %s", (excursion_id,)
+        )
+        respuesta = cur.fetchall()
+        dicExcursiones = []
 
-    inicio = respuesta[0][2]
-    inicio = inicio.strftime("%H:%M:%S")
-    final = respuesta[0][3]
-    final = final.strftime("%H:%M:%S")
+        inicio = respuesta[0][2]
+        inicio = inicio.strftime("%H:%M:%S")
+        final = respuesta[0][3]
+        final = final.strftime("%H:%M:%S")
 
-    dicExcursiones.append(
-        {
-            "Excursion id": respuesta[0][0],
-            "Nombre": respuesta[0][1],
-            "Inicio": inicio,
-            "Final": final,
-            "Descripcion": respuesta[0][4],
-            "Lugar": respuesta[0][5],
-        }
-    )
+        dicExcursiones.append(
+            {
+                "Excursion id": respuesta[0][0],
+                "Nombre": respuesta[0][1],
+                "Inicio": inicio,
+                "Final": final,
+                "Descripcion": respuesta[0][4],
+                "Lugar": respuesta[0][5],
+            }
+        )
 
-    return dicExcursiones
+        return dicExcursiones
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 def verExcursionPaquete(pv_id):
     """
     Devuelve una lista de excursiones asociadas a un paquete de viaje.
     """
-    cursor.execute("SELECT exc_id FROM pv_exc WHERE pv_id = %s", (pv_id,))
-    respuesta = cursor.fetchall()
-    lista_pv_ids = []
-    for excursion in respuesta:
-        lista_pv_ids.append(excursion[0])
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT exc_id FROM pv_exc WHERE pv_id = %s", (pv_id,))
+        respuesta = cur.fetchall()
+        lista_pv_ids = []
+        for excursion in respuesta:
+            lista_pv_ids.append(excursion[0])
 
-    excursiones = []
-    for i in lista_pv_ids:
-        r = buscarExcursionporId(i)
-        excursiones.append(r)
+        excursiones = []
+        for i in lista_pv_ids:
+            r = buscarExcursionporId(i)
+            excursiones.append(r)
 
-    return excursiones
+        return excursiones
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
