@@ -59,6 +59,12 @@ fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
   },
   body: JSON.stringify(data),
 })
-  .then((res) => res.json())
+  .then(async (res) => {
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Server error: ${res.status} ${errorText}`);
+    }
+    return res.json();
+  })
   .then((res) => console.log(res))
-  .catch(Error);
+  .catch(console.error);
