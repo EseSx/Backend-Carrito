@@ -38,7 +38,7 @@ async def ingresar_autos(data: Auto):
 # ---- Crear nueva relacion de viaje simple a auto ----
 @router.post("/ingresarVinculoVS")
 async def ingresar_vinculos_VS(data: VinculoVSaAuto):
-    res = vinculaVSaAuto(VinculoVSaAuto)
+    res = vinculaVSaAuto(data)
     return res
 
 
