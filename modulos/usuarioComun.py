@@ -19,7 +19,7 @@ def crearCliente(data):
     try:
         cur.execute("SELECT MAX(uc_id) FROM usuario_comun")
         max_id = cur.fetchone()
-        max_id += max_id[0] + 1
+        max_id = int(max_id[0])
 
         cur.execute(
             "INSERT INTO usuario_comun (uc_id, nombre, apellido, contraseña, correo_electronico) VALUES(%s,%s,%s,%s,%s)",
