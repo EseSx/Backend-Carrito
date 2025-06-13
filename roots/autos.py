@@ -17,7 +17,7 @@ from modulos.autos import agregarAuto, borrarAuto
 #         Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Auto
+from modulos.esquemas import Auto, AutoID
 
 
 # ===============================
@@ -55,9 +55,9 @@ def modificar_autos():
 
 # ---- Eliminar un auto por ID ----
 @router.post("/eliminar")
-def eliminar_autos(auto_id):
+def eliminar_autos(data: AutoID):
     """
     Elimina un auto de la base de datos utilizando su ID.
     """
-    res = borrarAuto(auto_id)
+    res = borrarAuto(data)
     return res

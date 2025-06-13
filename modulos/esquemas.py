@@ -72,6 +72,14 @@ class Auto(BaseModel):
     precio_por_dia: float
 
 
+class AutoID(BaseModel):
+    """
+    Modelo Pydantic para representar el id de un auto.
+    """
+
+    auto_id: int
+
+
 class Excursiones(BaseModel):
     """
     Modelo Pydantic para representar una excursión.

@@ -54,6 +54,42 @@
 //   .then((res) => console.log(res))
 //   .catch(console.error);
 
+// ---- Eliminar ----
+// <form id="formularioEliminarAutos">
+//   <input type="text" name="auto_id" />
+//   <button type="submit">Enviar</button>
+// </form>
+
+// const formularioEliminarAutos = document.getElementById(
+//   "formularioEliminarAutos"
+// );
+
+// formularioEliminarAutos.addEventListener("submit", (event) => {
+//   event.preventDefault();
+
+//   const formData = new FormData(formularioEliminarAutos);
+
+//   let data = Object.fromEntries(formData);
+
+//   // Para terminar de normalizar convertimos los valores al formato requerido
+//   data.auto_id = parseInt(data.auto_id);
+
+// fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
+//   method: "POST",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   body: JSON.stringify(data),
+// })
+//   .then(async (res) => {
+//     if (!res.ok) {
+//       const errorText = await res.text();
+//       throw new Error(`Server error: ${res.status} ${errorText}`);
+//     }
+//     return res.json();
+//   })
+//   .then((res) => console.log(res))
+//   .catch(console.error);
 // =============================
 //           CLIENTES
 // =============================
@@ -95,12 +131,10 @@
 //   .catch(console.error);
 
 let data = {
-  modelo: "Falcon",
-  disponible: 50,
-  precio_por_dia: 2000.75,
+  auto_id: 15,
 };
 
-fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
+fetch("https://backend-carrito-filb.vercel.app/autos/eliminar", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
