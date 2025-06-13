@@ -30,8 +30,8 @@ def ingresar_excursiones(data: Excursiones):
     """
     Recibe datos de una excursión y la agrega a la base de datos.
     """
-    agregarExcursiones(data)
-    return
+    res = agregarExcursiones(data)
+    return res
 
 
 # ---- Obtener todas las excursiones ----
@@ -58,5 +58,5 @@ def eliminar_excursiones(excursion_id):
     """
     Elimina una excursión dado su ID.
     """
-    eliminarExcursion(excursion_id)
-    return
+    res = eliminarExcursion(excursion_id)
+    return res

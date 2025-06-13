@@ -59,5 +59,5 @@ def eliminar_autos(auto_id):
     """
     Elimina un auto de la base de datos utilizando su ID.
     """
-    borrarAuto(auto_id)
-    return
+    res = borrarAuto(auto_id)
+    return res

@@ -35,8 +35,8 @@ async def ingresar_usuario(data: Usuarios_comunes):
     """
     Recibe los datos de un usuario común y lo crea en la base de datos.
     """
-    crearCliente(data)
-    return
+    res = crearCliente(data)
+    return res
 
 
 # ---- Obtener todos los usuarios comunes ----
@@ -45,8 +45,8 @@ async def retornar_usuario():
     """
     Devuelve la lista de todos los usuarios comunes.
     """
-    verClientes()
-    return
+    res = verClientes()
+    return res
 
 
 # ---- Eliminar usuario común por ID ----
@@ -55,8 +55,8 @@ async def eliminar_usuario(uc_id):
     """
     Elimina un usuario común dado su ID.
     """
-    eliminarUsuario(uc_id)
-    return
+    res = eliminarUsuario(uc_id)
+    return res
 
 
 # ---- Obtener usuario común por ID ----
@@ -65,5 +65,5 @@ async def retornarPorID_usuario(uc_id):
     """
     Devuelve los datos de un usuario común específico por ID.
     """
-    verClienteId(uc_id)
-    return
+    res = verClienteId(uc_id)
+    return res

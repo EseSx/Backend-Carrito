@@ -30,8 +30,8 @@ def ingresar_viaje_simple(data: Viaje_simple):
     """
     Registra un nuevo viaje simple en la base de datos.
     """
-    agregarViajeSimple(data)
-    return
+    res = agregarViajeSimple(data)
+    return res
 
 
 # ---- Obtener todos los viajes simples ----
@@ -58,5 +58,5 @@ def eliminar_viaje_simple(codigoDeViaje):
     """
     Elimina un viaje simple de la base de datos usando su código.
     """
-    quitarViajesimple(codigoDeViaje)
-    return
+    res = quitarViajesimple(codigoDeViaje)
+    return res

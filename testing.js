@@ -56,18 +56,54 @@
 //   .then((res) => console.log(res))
 //   .catch(console.error);
 
+// =============================
+//           CLIENTES
+// =============================
+// ---- Ingresar ----
+// <form id="formularioIngresarCliente">
+//   <input type="text" name="nombre" />
+//   <input type="text" name="apellido" />
+//   <input type="password" name="contraseña" />
+//   <input type="email" name="correo_electronico" />
+//   <button type="submit">Enviar</button>
+// </form>
+
+// const formularioIngresarCliente = document.getElementById(
+//   "formularioIngresarCliente"
+// );
+
+// formularioIngresarCliente.addEventListener("submit", (event) => {
+//   event.preventDefault();
+
+//   const formData = new FormData(formularioIngresarCliente);
+
+//   let data = Object.fromEntries(formData);
+
+// fetch("https://backend-carrito-filb.vercel.app/clientes/ingresar", {
+//   method: "POST",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   body: JSON.stringify(data),
+// })
+//   .then(async (res) => {
+//     if (!res.ok) {
+//       const errorText = await res.text();
+//       throw new Error(`Server error: ${res.status} ${errorText}`);
+//     }
+//     return res.json();
+//   })
+//   .then((res) => console.log(res))
+//   .catch(console.error);
+
 let data = {
-  auto_id: "4",
-  modelo: "auto",
-  disponibles: "2",
-  precio_por_dia: "250.50",
+  nombre: "Santi",
+  apellido: "Eseiza",
+  contraseña: "1512Sa",
+  correo_electronico: "santiagoEseiza11@gmail.com",
 };
 
-data.auto_id = parseInt(data.auto_id);
-data.disponibles = parseInt(data.disponibles);
-data.precio_por_dia = parseFloat(data.precio_por_dia);
-
-fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
+fetch("https://backend-carrito-filb.vercel.app/clientes/ingresar", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

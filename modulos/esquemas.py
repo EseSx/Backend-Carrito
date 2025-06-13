@@ -13,7 +13,6 @@ class Usuarios_comunes(BaseModel):
     apellido: str
     contraseña: str
     correo_electronico: str
-    estatus: str
 
 
 class Ventas(BaseModel):

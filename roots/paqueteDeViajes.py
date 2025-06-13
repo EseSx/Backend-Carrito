@@ -34,8 +34,8 @@ def ingresar_paquetesDeViaje(data: Paquete_de_viaje):
     """
     Recibe datos para un nuevo paquete de viaje y lo agrega a la base de datos.
     """
-    agregarPaquetedeViaje(data)
-    return
+    res = agregarPaquetedeViaje(data)
+    return res
 
 
 # ---- Obtener todos los paquetes de viaje ----
@@ -44,8 +44,8 @@ def retornar_paquetesDeViaje():
     """
     Devuelve la lista de todos los paquetes de viaje almacenados.
     """
-    verPaquetedeViajes()
-    return
+    res = verPaquetedeViajes()
+    return res
 
 
 # ---- Modificar paquete de viaje existente ---
@@ -63,5 +63,5 @@ def eliminar_paquetesDeViaje(codigoDeViaje):
     """
     Elimina un paquete de viaje dado su código identificador.
     """
-    quitarPaquetedeViaje(codigoDeViaje)
-    return
+    res = quitarPaquetedeViaje(codigoDeViaje)
+    return res

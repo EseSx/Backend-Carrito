@@ -30,8 +30,8 @@ def ingresar_ventas(data: Ventas):
     """
     Registra una nueva venta en la base de datos.
     """
-    sumarVenta(data)
-    return
+    res = sumarVenta(data)
+    return res
 
 
 # ---- Obtener todas las ventas ----
@@ -40,8 +40,8 @@ def retornar_ventas():
     """
     Devuelve la lista de todas las ventas registradas.
     """
-    verVentas()
-    return
+    res = verVentas()
+    return res
 
 
 # ---- Modificar venta existente ----
