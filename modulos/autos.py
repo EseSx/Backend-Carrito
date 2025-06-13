@@ -150,7 +150,7 @@ def verAutoPV(data):
         autos = []
         autoInfo = []
         for i in respuesta[0]:
-            autos.append(respuesta[0])
+            autos.append(respuesta[0][0])
         #     print(respuesta)
         # for auto in autos:
         #     r = verAutoID(auto)
