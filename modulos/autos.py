@@ -46,7 +46,7 @@ def borrarAuto(data):
     try:
         cur.execute("DELETE FROM auto WHERE auto_id = %s", (data.auto_id,))
 
-        return {"Mensaje": "Auto eliminado exitosamente"}
+        return {"Mensaje": "Auto eliminado exitosamente", "auto": data.auto_id}
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
