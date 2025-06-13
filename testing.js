@@ -85,7 +85,8 @@
 // export default FormularioIngresarCliente;
 
 let data = {
-  auto_id: 15,
+  vs_id: 676713848,
+  at_id: 4,
 };
 
 fetch("https://backend-carrito-filb.vercel.app/autos/ingresarVinculoVS", {
