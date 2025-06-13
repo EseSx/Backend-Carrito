@@ -111,7 +111,7 @@ def vincularPVaAuto(data):
 # ===============================
 
 
-# PENDIENTE
+# ANDA
 def verAutoID(data):
     """
     Devuelve la información de un auto por su ID.
@@ -137,14 +137,15 @@ def verAutoID(data):
         conn.close()
 
 
-def verAutoPV(pv_id):
+# PENDIENTE
+def verAutoPV(data):
     """
     Devuelve todos los autos vinculados a un paquete de viajes.
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT * FROM exc_at WHERE pv_id = %s", (pv_id,))
+        cur.execute("SELECT * FROM exc_at WHERE pv_id = %s", (data.pv_id,))
         respuesta = cur.fetchall()
         autos = []
         autoInfo = []

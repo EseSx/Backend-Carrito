@@ -16,6 +16,7 @@ from modulos.autos import (
     vinculaVSaAuto,
     vincularPVaAuto,
     verAutoID,
+    verAutoPV,
 )
 
 
@@ -23,7 +24,13 @@ from modulos.autos import (
 #         Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Auto, AutoID, VinculoVSaAuto, VinculoPVaAuto
+from modulos.esquemas import (
+    Auto,
+    AutoID,
+    VinculoVSaAuto,
+    VinculoPVaAuto,
+    Paquete_de_viajeID,
+)
 
 
 # ===============================
@@ -55,13 +62,23 @@ async def ingresar_vinculos_PV(data: VinculoPVaAuto):
     return res
 
 
-# ---- Obtener lista de autos ----
+# ---- Obtener lista de autos por ID ----
 @router.post("/obtenerID")
 async def retornar_autosPorID(data: AutoID):
     """
     Devuelve la lista de autos almacenados (pendiente implementación).
     """
     res = verAutoID(data)
+    return res
+
+
+# ---- Obtener lista de autos relacionados a un paquete de viajes ----
+@router.post("/obtenerPV")
+async def retornar_autosPorPV(data: Paquete_de_viajeID):
+    """
+    Devuelve la lista de autos almacenados (pendiente implementación).
+    """
+    res = verAutoPV(data)
     return res
 
 

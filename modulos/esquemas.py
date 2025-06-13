@@ -62,6 +62,14 @@ class Paquete_de_viaje(BaseModel):
     estado: str
 
 
+class Paquete_de_viajeID(BaseModel):
+    """
+    Modelo Pydantic para representar la id de un paquete de viaje.
+    """
+
+    pv_id: int
+
+
 class Auto(BaseModel):
     """
     Modelo Pydantic para representar un auto disponible para alquiler.
