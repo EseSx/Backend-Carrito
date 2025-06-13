@@ -2,7 +2,7 @@
 #   Conexión con la Base de Datos
 # ===============================
 
-from main import cursor
+from main import cursor, conexion
 
 
 # ===============================
@@ -18,7 +18,7 @@ def agregarAuto(data):
         "INSERT INTO autos (modelo, disponibles, precio_por_dia) VALUES(%s,%s,%s)",
         (data.modelo, data.disponibles, data.precio_por_dia),
     )
-    cursor.commit()
+    conexion.commit()
 
     return {"mensaje": "Nuevo auto cargado exitosamente"}
 

@@ -32,7 +32,7 @@ def ingresar_autos(data: Auto):
     Recibe los datos de un auto y llama a la función para agregarlo a la base.
     """
     agregarAuto(data)
-    return
+    return "no me completo"
 
 
 # ---- Obtener lista de autos ----

@@ -28,10 +28,14 @@
 
 //   const formData = new FormData(formularioIngresarAutos);
 
-//   const data = Object.fromEntries(formData);
+//   let data = Object.fromEntries(formData);
 //   // El contenido de data va a ser un diccionario, formado por los name de cada input como claves, y con los propios valores que se les hayan ingresado
 //   // Este data se veria asi:
 //   // {modelo: ..., disponibles: ..., precio_por_dia: ...}
+
+//   // Para terminar de normalizar convertimos los valores al formato requerido
+//   data.disponibles = parseInt(data.disponibles);
+//   data.precio_por_dia = parseFloat(data.precio_por_dia);
 
 //   fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
 //     method: "POST",
@@ -44,16 +48,16 @@
 //     .then((res) => console.log(res));
 // });
 
+let data = { modelo: "auto", disponibles: "2", precio_por_dia: "250.50" };
+data.disponibles = parseInt(data.disponibles);
+data.precio_por_dia = parseFloat(data.precio_por_dia);
+
 fetch("https://backend-carrito-filb.vercel.app/autos/ingresar", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
   },
-  body: JSON.stringify({
-    modelo: "auto",
-    disponibles: "2",
-    precio_por_dia: "250,00",
-  }),
+  body: JSON.stringify(data),
 })
   .then((res) => res.json())
   .then((res) => console.log(res))
