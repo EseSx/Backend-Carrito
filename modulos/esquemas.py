@@ -22,7 +22,9 @@ class Ventas(BaseModel):
     medio_de_pago: str
     cuotas: bool
     cantidad: int
-    codigo_viaje: int
+    codigo_vs: int
+    codigo_pv: int
+    precio: float
 
 
 class Viaje_simple(BaseModel):
@@ -61,3 +63,5 @@ class Excursiones(BaseModel):
     nombre: str
     inicio: str
     final: str
+    descripcion: str
+    lugar: str

@@ -38,6 +38,32 @@ def convertirDatosVentas(respuesta):
 
 
 # --- CRUD ---
+# Create venta
+from controladores.date import convertirDate, convertirHora
+
+
+def sumarVenta(data):
+    fecha = convertirDate(data.fecha)
+    hora = convertirHora(data.hora)
+
+    cursor.execute(
+        "INSERT INTO ventas (fecha, hora, medio_de_pago, cuotas, cantidad, codigo_vs, codigo_pv, precio) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+        (
+            fecha,
+            hora,
+            data.medio_de_pago,
+            data.cuotas,
+            data.cantidad,
+            data.codigo_vs,
+            data.codigo_pv,
+            data.precio,
+        ),
+    )
+    cursor.commit()
+
+    return {"Mensaje": "Venta sumada"}
+
+
 # Read ventas
 def verVentas():
 
@@ -46,34 +72,6 @@ def verVentas():
     nrespuesta = convertirDatosVentas(respuesta)
 
     return nrespuesta
-
-
-# Create venta
-from controladores.date import convertirDate, convertirHora
-
-
-def sumarVenta(
-    vtas_id, fecha, hora, medio_de_pago, cuotas, cantidad, codigo_vs, codigo_pv, precio
-):
-    fecha = convertirDate(fecha)
-    hora = convertirHora(hora)
-    cursor.execute(
-        "INSERT INTO ventas (vtas_id, fecha, hora, medio_de_pago, cuotas, cantidad, codigo_vs, codigo_pv, precio) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-        (
-            vtas_id,
-            fecha,
-            hora,
-            medio_de_pago,
-            cuotas,
-            cantidad,
-            codigo_vs,
-            codigo_pv,
-            precio,
-        ),
-    )
-    cursor.commit()
-
-    return {"Mensaje": "Venta sumada"}
 
 
 # --- Query venta ---

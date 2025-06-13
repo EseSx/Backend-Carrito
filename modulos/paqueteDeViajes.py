@@ -36,6 +36,38 @@ def convertirDatosTPV(respuesta):
 
 
 # --- CRUD ---
+# Create paquete de viaje
+from controladores.date import convertirDate, convertirHora
+
+
+def agregarPaquetedeViaje(data):
+    hora = convertirHora(data.hora)
+    fecha = convertirDate(data.fecha)
+
+    cursor.execute(
+        "INSERT INTO paquete_de_viajes (codigo, nombre, precio, origen, destino, estadia, tipo, descripcion, cupos, duracion, tipo_de_viaje, hora, fecha) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        (
+            data.codigo,
+            data.nombre,
+            data.precio,
+            data.origen,
+            data.destino,
+            data.estadia,
+            data.tipo,
+            data.descripcion,
+            data.cupos,
+            data.duracion,
+            data.tipo_de_viaje,
+            hora,
+            fecha,
+            data.estado,
+        ),
+    )
+    cursor.commit()
+
+    return {"Mensaje": "Nuevo viaje simple agregado"}
+
+
 # Read paquete de viajes
 def verPaquetedeViajes():
     cursor.execute("SELECT * FROM paquete_de_viajes")
@@ -44,52 +76,6 @@ def verPaquetedeViajes():
     nrepuesta = convertirDatosTPV(respuesta)
 
     return nrepuesta
-
-
-# Insert paquete de viaje
-from controladores.date import convertirDate, convertirHora
-
-
-def agregarPaquetedeViaje(
-    codigo,
-    nombre,
-    precio,
-    origen,
-    destino,
-    estadia,
-    tipo,
-    descripcion,
-    cupos,
-    duracion,
-    tipo_de_viaje,
-    hora,
-    fecha,
-    estado,
-):
-    hora = convertirHora(hora)
-    fecha = convertirDate(fecha)
-    cursor.execute(
-        "INSERT INTO paquete_de_viajes (codigo, nombre, precio, origen, destino, estadia, tipo, descripcion, cupos, duracion, tipo_de_viaje, hora, fecha) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        (
-            codigo,
-            nombre,
-            precio,
-            origen,
-            destino,
-            estadia,
-            tipo,
-            descripcion,
-            cupos,
-            duracion,
-            tipo_de_viaje,
-            hora,
-            fecha,
-            estado,
-        ),
-    )
-    cursor.commit()
-
-    return {"Mensaje": "Nuevo viaje simple agregado"}
 
 
 # Delete paquete de viaje

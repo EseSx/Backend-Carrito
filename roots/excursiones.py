@@ -3,8 +3,8 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-# --- Importar CRUD de viajes simples ---
-from modulos.excursiones import agregarExcursiones
+# --- Importar CRUD de excursiones ---
+from modulos.excursiones import agregarExcursiones, eliminarExcursion
 
 # -- Importar Base Models ---
 from modulos.esquemas import Excursiones
@@ -20,18 +20,18 @@ def ingresar_excursiones(data: Excursiones):
 
 # Read excursiones
 @router.get("/obtener")
-def retornar_viaje_simple():
-    return verViajesSimples()
-
-
-# Update viaje simple
-@router.post("/modificar")
-def modificar_viaje_simple():
+def retornar_excursiones():
     return
 
 
-# Delete viaje simple
+# Update excursiones
+@router.post("/modificar")
+def modificar_excursiones():
+    return
+
+
+# Delete excursiones
 @router.post("/eliminar")
-def eliminar_viaje_simple(codigoDeViaje):
-    quitarViajesimple(codigoDeViaje)
+def eliminar_excursiones(excursion_id):
+    eliminarExcursion(excursion_id)
     return

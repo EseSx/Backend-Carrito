@@ -4,10 +4,10 @@ from main import cursor
 
 # --- CRUD ---
 # Insert Excursiones
-def agregarExcursiones(excursion_id, nombre, inicio, final, descripcion, lugar):
+def agregarExcursiones(data):
     cursor.execute(
-        "INSERT INTO excursiones (excursion_id, nombre, inicio, final, descripcion, lugar) VALUES(%s,%s,%s,%s,%s,%s)",
-        (excursion_id, nombre, inicio, final, descripcion, lugar),
+        "INSERT INTO excursiones (nombre, inicio, final, descripcion, lugar) VALUES(%s,%s,%s,%s,%s)",
+        (data.nombre, data.inicio, data.final, data.descripcion, data.lugar),
     )
     cursor.commit()
 
