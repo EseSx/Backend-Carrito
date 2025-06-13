@@ -45,6 +45,7 @@ def borrarAuto(data):
     cur = conn.cursor()
     try:
         cur.execute("DELETE FROM auto WHERE auto_id = %s", (data.auto_id,))
+        conn.commit()
 
         return {"Mensaje": "Auto eliminado exitosamente", "auto": data.auto_id}
     except Exception as e:
