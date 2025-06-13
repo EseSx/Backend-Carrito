@@ -89,7 +89,7 @@ let data = {
   at_id: 4,
 };
 
-fetch("https://backend-carrito-filb.vercel.app/autos/ingresarVinculoVS", {
+fetch("https://backend-carrito-filb.vercel.app/autos/ingresarVinculoPV", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

@@ -10,7 +10,13 @@ router = APIRouter()
 #         Importación de CRUD
 # ===============================
 
-from modulos.autos import agregarAuto, borrarAuto, vinculaVSaAuto, vincularPVaAuto
+from modulos.autos import (
+    agregarAuto,
+    borrarAuto,
+    vinculaVSaAuto,
+    vincularPVaAuto,
+    verAutoID,
+)
 
 
 # ===============================
@@ -50,12 +56,13 @@ async def ingresar_vinculos_PV(data: VinculoPVaAuto):
 
 
 # ---- Obtener lista de autos ----
-@router.get("/obtener")
-async def retornar_autos():
+@router.get("/obtenerID")
+async def retornar_autosPorID(data: AutoID):
     """
     Devuelve la lista de autos almacenados (pendiente implementación).
     """
-    return
+    res = verAutoID(data)
+    return res
 
 
 # ---- Modificar datos de un auto ----
