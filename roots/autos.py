@@ -25,7 +25,7 @@ from modulos.esquemas import Auto
 # ===============================
 
 
-# ---- Crear nuevo auto ----
+# ---- Crear nuevo auto ---- ANDA
 @router.post("/ingresar")
 async def ingresar_autos(data: Auto):
     """

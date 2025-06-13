@@ -29,7 +29,7 @@ from modulos.esquemas import Usuarios_comunes
 # ===============================
 
 
-# ---- Crear nuevo usuario común ----
+# ---- Crear nuevo usuario común ---- ANDA
 @router.post("/ingresar")
 async def ingresar_usuario(data: Usuarios_comunes):
     """

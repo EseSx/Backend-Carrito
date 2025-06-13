@@ -16,10 +16,15 @@ def agregarAuto(data):
     """
     conn = get_connection()
     cur = conn.cursor()
+
     try:
+        cur.execute("SELECT MAX(auto_id) FROM auto")
+        max_id = cur.fetchone()
+        max_id = int(max_id[0]) + 1
+
         cur.execute(
             "INSERT INTO auto (auto_id, modelo, disponibles, precio_por_dia) VALUES(%s,%s,%s,%s)",
-            (data.auto_id, data.modelo, data.disponibles, data.precio_por_dia),
+            (max_id, data.modelo, data.disponibles, data.precio_por_dia),
         )
         conn.commit()
 
