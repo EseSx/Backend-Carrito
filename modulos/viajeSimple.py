@@ -51,41 +51,28 @@ def verViajesSimples():
 
 
 # Insert viajes simples
-def agregarViajeSimple(
-    codigo,
-    nombre,
-    descripcion,
-    precio,
-    origen,
-    destino,
-    transporte,
-    fecha,
-    hora,
-    cupos,
-    duracion_aprox,
-    tipo_de_viaje,
-    estado,
-):
+def agregarViajeSimple(data):
+    hora = convertirHora(data.hora)
+    fecha = convertirDate(data.fecha)
+
     cursor.execute(
         "INSERT INTO viaje_simple (codigo, nombre, descripcion, precio, origen, destino, transporte, fecha, hora, cupos, duracion_aprox, tipo_de_viaje, estado) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
         (
-            codigo,
-            nombre,
-            descripcion,
-            precio,
-            origen,
-            destino,
-            transporte,
+            data.codigo,
+            data.nombre,
+            data.descripcion,
+            data.precio,
+            data.origen,
+            data.destino,
+            data.transporte,
             fecha,
             hora,
-            cupos,
-            duracion_aprox,
-            tipo_de_viaje,
-            estado,
+            data.cupos,
+            data.duracion_aprox,
+            data.tipo_de_viaje,
+            data.estado,
         ),
     )
-    hora = convertirHora(hora)
-    fecha = convertirDate(fecha)
     cursor.commit()
 
     return {"Mensaje": "Nuevo viaje simple agregado"}

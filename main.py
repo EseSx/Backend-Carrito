@@ -16,16 +16,18 @@ app.add_middleware(
 )
 
 # --- Coneccion/Creacion de base de datos ---
-import psycopg2
+import psycopg
 
 hostURL = "postgresql://santi:NfWdr3CRaZ9q3qZhazSVltB0dW3qQ52W@dpg-d13hpvggjchc73cb6fj0-a.ohio-postgres.render.com/bd_productos"
 
-conexion = psycopg2.connect(hostURL)
+conexion = psycopg.connect(hostURL)
 
 cursor = conexion.cursor()
 
 
 # --- Rutas ---
 from roots.viajes import router as viajes_routers
+from roots.clientes import router as clientes_routers
 
 app.include_router(viajes_routers, prefix="/viajes")
+app.include_router(clientes_routers, prefix="/clientes")

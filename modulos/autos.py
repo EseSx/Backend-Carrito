@@ -4,10 +4,10 @@ from main import cursor
 
 # --- CRUD ---
 # Insert Auto
-def agregarAuto(auto_id, modelo, disponibles, precio_por_dia):
+def agregarAuto(data):
     cursor.execute(
-        "INSERT INTO autos (auto_id, modelo, disponibles, precio_por_dia) VALUES(%s,%s,%s,%s)",
-        (auto_id, modelo, disponibles, precio_por_dia),
+        "INSERT INTO autos (modelo, disponibles, precio_por_dia) VALUES(%s,%s,%s)",
+        (data.modelo, data.disponibles, data.precio_por_dia),
     )
     cursor.commit()
 
