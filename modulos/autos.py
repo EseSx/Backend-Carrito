@@ -154,7 +154,7 @@ def verAutoPV(data):
         for n in lista:
             dicAutos.append(verAutoID(n))
 
-        return {"msg": "datos recibidos"}
+        return {"msg": "datos"}
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
