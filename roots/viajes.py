@@ -1,37 +1,62 @@
-# --- Creacion del router ---
+# ===============================
+#       Creación del Router
+# ===============================
+
 from fastapi import APIRouter
 
 router = APIRouter()
 
-# --- Importar CRUD de viajes simples ---
+# ===============================
+#       Importación de CRUD
+# ===============================
+
 from modulos.viajeSimple import verViajesSimples, agregarViajeSimple, quitarViajesimple
 
-# -- Importar Base Models ---
+# ===============================
+#       Importación de Modelos
+# ===============================
+
 from modulos.esquemas import Viaje_simple
 
 
-# --- Rutas CRUD ---
-# Create viaje simple
+# ===============================
+#           Rutas CRUD
+# ===============================
+
+
+# ---- Crear viaje simple ----
 @router.post("/ingresar")
 def ingresar_viaje_simple(data: Viaje_simple):
+    """
+    Registra un nuevo viaje simple en la base de datos.
+    """
     agregarViajeSimple(data)
     return
 
 
-# Read viaje simple
+# ---- Obtener todos los viajes simples ----
 @router.get("/obtener")
 def retornar_viaje_simple():
+    """
+    Devuelve la lista de todos los viajes simples registrados.
+    """
     return verViajesSimples()
 
 
-# Update viaje simple
+# ---- Modificar viaje simple ----
 @router.post("/modificar")
 def modificar_viaje_simple():
+    """
+    Actualiza la información de un viaje simple específico.
+    """
     return
 
 
-# Delete viaje simple
+# ---- Eliminar viaje simple ----
 @router.post("/eliminar")
 def eliminar_viaje_simple(codigoDeViaje):
+    """
+    Elimina un viaje simple de la base de datos usando su código.
+    """
     quitarViajesimple(codigoDeViaje)
     return

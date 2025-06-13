@@ -1,11 +1,21 @@
-# --- Coneccion BD ---
+# ===============================
+#       Conexión con la Base de Datos
+# ===============================
+
 from main import cursor
-
-# --- Convertir datos TVS a diccionario ---
 import datetime
+from controladores.date import convertirDate, convertirHora
+
+# ===============================
+#             CRUD
+# ===============================
 
 
+# ---- Convertir datos paquete de viaje a diccionario ----
 def convertirDatosTPV(respuesta):
+    """
+    Convierte la respuesta de la BD a lista de diccionarios con formato de fecha y hora.
+    """
     registroListas = []
     for item in respuesta:
         dicConvertido = []
@@ -35,17 +45,16 @@ def convertirDatosTPV(respuesta):
     return registroListas
 
 
-# --- CRUD ---
-# Create paquete de viaje
-from controladores.date import convertirDate, convertirHora
-
-
+# ---- Insertar paquete de viaje ----
 def agregarPaquetedeViaje(data):
+    """
+    Inserta un nuevo paquete de viaje en la base de datos.
+    """
     hora = convertirHora(data.hora)
     fecha = convertirDate(data.fecha)
 
     cursor.execute(
-        "INSERT INTO paquete_de_viajes (codigo, nombre, precio, origen, destino, estadia, tipo, descripcion, cupos, duracion, tipo_de_viaje, hora, fecha) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        "INSERT INTO paquete_de_viajes (codigo, nombre, precio, origen, destino, estadia, tipo, descripcion, cupos, duracion, tipo_de_viaje, hora, fecha, estado) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         (
             data.codigo,
             data.nombre,
@@ -68,8 +77,11 @@ def agregarPaquetedeViaje(data):
     return {"Mensaje": "Nuevo viaje simple agregado"}
 
 
-# Read paquete de viajes
+# ---- Consultar todos los paquetes de viaje ----
 def verPaquetedeViajes():
+    """
+    Devuelve una lista con todos los paquetes de viaje.
+    """
     cursor.execute("SELECT * FROM paquete_de_viajes")
     respuesta = cursor.fetchall()
 
@@ -78,8 +90,11 @@ def verPaquetedeViajes():
     return nrepuesta
 
 
-# Delete paquete de viaje
+# ---- Eliminar paquete de viaje ----
 def quitarPaquetedeViaje(codigoDeViaje):
+    """
+    Elimina un paquete de viaje por su código.
+    """
     cursor.execute("DELETE FROM paquete_de_viajes WHERE codigo = %s", (codigoDeViaje,))
     cursor.commit()
 

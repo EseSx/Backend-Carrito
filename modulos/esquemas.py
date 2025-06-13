@@ -1,10 +1,12 @@
-# --- Creacion de modelos pydantic ---
+# ===============================
+#   Creación de modelos Pydantic
+# ===============================
 from pydantic import BaseModel
 
 
 class Usuarios_comunes(BaseModel):
     """
-    Modelo para recibir usuarios comunes
+    Modelo Pydantic para la creación de usuarios comunes.
     """
 
     nombre: str
@@ -16,7 +18,7 @@ class Usuarios_comunes(BaseModel):
 
 class Ventas(BaseModel):
     """
-    Modelo para recibir ventas
+    Modelo Pydantic para registrar información de una venta.
     """
 
     medio_de_pago: str
@@ -28,6 +30,10 @@ class Ventas(BaseModel):
 
 
 class Viaje_simple(BaseModel):
+    """
+    Modelo Pydantic para representar un viaje simple.
+    """
+
     codigo: int
     nombre: str
     descripcion: str
@@ -35,33 +41,45 @@ class Viaje_simple(BaseModel):
     origen: str
     destino: str
     transporte: str
-    fecha: str
-    hora: str
+    fecha: str  # Formato recomendado: 'dd/mm/yy'
+    hora: str  # Formato recomendado: 'HH:MM'
     cupos: int
     duracion_aprox: str
-    tipo_de_viaje: str  # solo ida o ida y vuelta
+    tipo_de_viaje: str  # Valores: 'solo ida' o 'ida y vuelta'
     estado: str
 
 
 class Paquete_de_viaje(BaseModel):
+    """
+    Modelo Pydantic para representar un paquete de viaje.
+    """
+
     nombre: str
     precio: float
     origen: str
     destino: str
     estadia: str
-    tipo: str  # nacional o internacional
+    tipo: str  # Valores: 'nacional' o 'internacional'
     estado: str
 
 
 class Auto(BaseModel):
+    """
+    Modelo Pydantic para representar un auto disponible para alquiler.
+    """
+
     modelo: str
     disponibles: int
     precio_por_dia: float
 
 
 class Excursiones(BaseModel):
+    """
+    Modelo Pydantic para representar una excursión.
+    """
+
     nombre: str
-    inicio: str
-    final: str
+    inicio: str  # Fecha de inicio (se recomienda formato 'dd/mm/yy')
+    final: str  # Fecha de finalización (se recomienda formato 'dd/mm/yy')
     descripcion: str
     lugar: str

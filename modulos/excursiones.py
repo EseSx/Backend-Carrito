@@ -1,10 +1,20 @@
-# --- Conexion BD ---
+# ===============================
+#   Conexión con la Base de Datos
+# ===============================
+
 from main import cursor
 
 
-# --- CRUD ---
-# Insert Excursiones
+# ===============================
+#             CRUD
+# ===============================
+
+
+# ---- Insertar Excursión ----
 def agregarExcursiones(data):
+    """
+    Inserta una nueva excursión en la base de datos.
+    """
     cursor.execute(
         "INSERT INTO excursiones (nombre, inicio, final, descripcion, lugar) VALUES(%s,%s,%s,%s,%s)",
         (data.nombre, data.inicio, data.final, data.descripcion, data.lugar),
@@ -14,24 +24,41 @@ def agregarExcursiones(data):
     return {"Mensaje": "Se ha agregado la excursion exitosamente"}
 
 
-# Delete Excursiones
+# ---- Eliminar Excursión ----
 def eliminarExcursion(excursion_id):
+    """
+    Elimina una excursión por su ID.
+    """
     cursor.execute("DELETE FROM excursiones WHERE excursion_id = %s", (excursion_id,))
     cursor.commit()
 
     return {"Mensaje": "Borrado exitosamente"}
 
 
-# --- Relacionar excursiones & paquetes de viaje ---
+# ===============================
+#  Relacionar Excursión & Paquete
+# ===============================
+
+
 def paqueteViajesExcursion(pv_id, exc_id):
+    """
+    Vincula una excursión con un paquete de viajes.
+    """
     cursor.execute("INSERT INTO pv_exc (pv_id, exc_id) VALUES (%s,%s)", (pv_id, exc_id))
     cursor.commit()
 
     return {"Mensaje": "Se ha vinculado una excursion con un paquete de viajes"}
 
 
-# --- Query de excursiones ---
+# ===============================
+#          Consultas
+# ===============================
+
+
 def buscarExcursionporId(excursion_id):
+    """
+    Busca una excursión por su ID y devuelve sus detalles.
+    """
     cursor.execute("SELECT * FROM excursiones WHERE excursion_id = %s", (excursion_id,))
     respuesta = cursor.fetchall()
     dicExcursiones = []
@@ -53,3 +80,21 @@ def buscarExcursionporId(excursion_id):
     )
 
     return dicExcursiones
+
+
+def verExcursionPaquete(pv_id):
+    """
+    Devuelve una lista de excursiones asociadas a un paquete de viaje.
+    """
+    cursor.execute("SELECT exc_id FROM pv_exc WHERE pv_id = %s", (pv_id,))
+    respuesta = cursor.fetchall()
+    lista_pv_ids = []
+    for excursion in respuesta:
+        lista_pv_ids.append(excursion[0])
+
+    excursiones = []
+    for i in lista_pv_ids:
+        r = buscarExcursionporId(i)
+        excursiones.append(r)
+
+    return excursiones

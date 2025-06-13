@@ -1,21 +1,43 @@
-# --- Conexion con las BD ---
-from main import cursor
+# --- Importar conexión a la base de datos ---
+from main import cursor, conexion
 
-# --- Manejar cupos TVS ---
+# --- Importar funciones relacionadas ---
 from modulos.viajeSimple import quitarViajesimple
+from modulos.paqueteDeViajes import quitarPaquetedeViaje
+
+# ============================
+#   Funciones para Viaje Simple
+# ============================
 
 
 def consultarCuposTVS(codigoViaje):
-    cursor.execute("SELECT cupo FROM viaje_simple WHERE codigo = %s", (codigoViaje,))
-    ncupos = cursor.fetchall()
+    """
+    Verifica la cantidad de cupos disponibles para un viaje simple.
+    Si no hay cupos, cambia el estado a 'No disponible'.
+    """
+    cursor.execute("SELECT cupos FROM viaje_simple WHERE codigo = %s", (codigoViaje,))
+    resultado = cursor.fetchone()
+    cupos = resultado[0]
 
-    if ncupos == 0:
-        quitarViajesimple(codigoViaje)
+    if cupos == 0:
+        cursor.execute(
+            "UPDATE viaje_simple SET estado = %s WHERE codigo = %s",
+            ("No disponible", codigoViaje),
+        )
+        cursor.commit()
+        return {"Mensaje": "Ya no tiene cupos disponibles."}
     else:
+        cursor.execute(
+            "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
+            ("disponible", codigoViaje),
+        )
         return {"Mensaje": "Sigue con cupos disponibles."}
 
 
 def restarCupoTVS(codigoViaje, cantidad):
+    """
+    Descuenta cupos de un viaje simple si hay suficientes disponibles.
+    """
     cursor.execute("SELECT cupos FROM viaje_simple WHERE codigo = %s", (codigoViaje,))
     ncupos = cursor.fetchall()
 
@@ -24,7 +46,7 @@ def restarCupoTVS(codigoViaje, cantidad):
             "UPDATE viaje_simple SET cupos = cupos - %s WHERE codigo = %s",
             (cantidad, codigoViaje),
         )
-        cursor.commit()
+        conexion.commit()
 
         return {"Mensaje": "Cupo decrementado exitosamente"}
 
@@ -34,24 +56,41 @@ def restarCupoTVS(codigoViaje, cantidad):
         }
 
 
-# --- Manejar cupos TPV ---
-from modulos.paqueteDeViajes import quitarPaquetedeViaje
+# =============================
+#   Funciones para Paquete de Viajes
+# =============================
 
 
 def consultarCuposTPV(codigoViaje):
+    """
+    Verifica la cantidad de cupos disponibles para un paquete de viajes.
+    Si no hay cupos, cambia el estado a 'No disponible'.
+    """
     cursor.execute(
-        "SELECT cupo FROM paquete_de_viajes WHERE codigo = %s", (codigoViaje)
+        "SELECT cupos FROM paquete_de_viajes WHERE codigo = %s", (codigoViaje,)
     )
-    ncupos = cursor.fetchall()
+    resultado = cursor.fetchone()
+    cupos = resultado[0]
 
-    if ncupos == 0:
-        quitarPaquetedeViaje(codigoViaje)
+    if cupos == 0:
+        cursor.execute(
+            "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
+            ("No disponible", codigoViaje),
+        )
+        conexion.commit()
+        return {"Mensaje": "Ya no tiene cupos disponibles."}
     else:
+        cursor.execute(
+            "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
+            ("disponible", codigoViaje),
+        )
         return {"Mensaje": "Sigue con cupos disponibles."}
 
 
 def restarCupoTPV(codigoViaje, cantidad):
-
+    """
+    Descuenta cupos de un paquete de viajes si hay suficientes disponibles.
+    """
     cursor.execute(
         "SELECT cupos FROM paquete_de_viajes WHERE codigo = %s", (codigoViaje,)
     )
@@ -62,7 +101,7 @@ def restarCupoTPV(codigoViaje, cantidad):
             "UPDATE paquete_de_viajes SET cupos = cupos - %s WHERE codigo = %s",
             (cantidad, codigoViaje),
         )
-        cursor.commit()
+        conexion.commit()
 
         return {"Mensaje": "Cupo decrementado exitosamente"}
 

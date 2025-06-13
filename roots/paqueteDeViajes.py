@@ -1,42 +1,67 @@
-# --- Creacion del router ---
+# ===============================
+#         Creación del Router
+# ===============================
+
 from fastapi import APIRouter
 
 router = APIRouter()
 
-# --- Importar CRUD de paquetes de viaje ---
+# ===============================
+#       Importación de CRUD
+# ===============================
+
 from modulos.paqueteDeViajes import (
     agregarPaquetedeViaje,
     verPaquetedeViajes,
     quitarPaquetedeViaje,
 )
 
-# -- Importar Base Models ---
+# ===============================
+#       Importación de Modelos
+# ===============================
+
 from modulos.esquemas import Paquete_de_viaje
 
 
-# --- Rutas CRUD ---
-# Create paquetes de viaje
+# ===============================
+#           Rutas CRUD
+# ===============================
+
+
+# ---- Crear nuevo paquete de viaje ----
 @router.post("/ingresar")
 def ingresar_paquetesDeViaje(data: Paquete_de_viaje):
+    """
+    Recibe datos para un nuevo paquete de viaje y lo agrega a la base de datos.
+    """
     agregarPaquetedeViaje(data)
     return
 
 
-# Read paquetes de viaje
+# ---- Obtener todos los paquetes de viaje ----
 @router.get("/obtener")
 def retornar_paquetesDeViaje():
+    """
+    Devuelve la lista de todos los paquetes de viaje almacenados.
+    """
     verPaquetedeViajes()
     return
 
 
-# Update paquetes de viaje
+# ---- Modificar paquete de viaje existente ---
 @router.post("/modificar")
 def modificar_paquetesDeViaje():
+    """
+    Actualiza los datos de un paquete de viaje existente.
+    """
     return
 
 
-# Delete paquetes de viaje
+# ---- Eliminar paquete de viaje por código ----
 @router.post("/eliminar")
 def eliminar_paquetesDeViaje(codigoDeViaje):
+    """
+    Elimina un paquete de viaje dado su código identificador.
+    """
     quitarPaquetedeViaje(codigoDeViaje)
     return

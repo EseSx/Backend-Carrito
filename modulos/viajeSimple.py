@@ -1,12 +1,20 @@
-# --- Coneccion BD ---
-from main import cursor
+# ===============================
+#       Conexión con la Base de Datos
+# ===============================
 
-# --- Convertir datos TVS a diccionario ---
+from main import cursor
 import datetime
+
+# ===============================
+#       Funciones auxiliares
+# ===============================
 
 
 def convertirDatosTVS(respuesta):
-
+    """
+    Convierte la lista de tuplas resultado de la consulta en una lista
+    de diccionarios con formato adecuado para fechas y horas.
+    """
     registroListas = []
     for item in respuesta:
         dicConvertido = []
@@ -36,13 +44,19 @@ def convertirDatosTVS(respuesta):
     return registroListas
 
 
-# --- CRUD ---
+# ===============================
+#             CRUD
+# ===============================
+
 from controladores.date import convertirDate, convertirHora
 
 
-# Read viajes simples
+# ---- Leer todos los viajes simples ----
 def verViajesSimples():
-
+    """
+    Recupera todos los viajes simples de la base de datos y los devuelve
+    en formato de lista de diccionarios con fechas y horas formateadas.
+    """
     cursor.execute("SELECT * FROM viaje_simple")
     respuesta = cursor.fetchall()
     nrepuesta = convertirDatosTVS(respuesta)
@@ -50,8 +64,12 @@ def verViajesSimples():
     return nrepuesta
 
 
-# Insert viajes simples
+# ---- Agregar un nuevo viaje simple ----
 def agregarViajeSimple(data):
+    """
+    Inserta un nuevo viaje simple en la base de datos,
+    convirtiendo la fecha y la hora al formato adecuado.
+    """
     hora = convertirHora(data.hora)
     fecha = convertirDate(data.fecha)
 
@@ -78,8 +96,11 @@ def agregarViajeSimple(data):
     return {"Mensaje": "Nuevo viaje simple agregado"}
 
 
-# Delete viajes simples
+# ---- Eliminar un viaje simple por código ----
 def quitarViajesimple(codigoDeViaje):
+    """
+    Elimina un viaje simple de la base de datos según su código.
+    """
     cursor.execute("DELETE FROM viaje_simple WHERE codigo = %s", (codigoDeViaje,))
     cursor.commit()
 

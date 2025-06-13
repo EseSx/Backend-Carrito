@@ -1,10 +1,19 @@
-# --- Conexion con la BD ---
+# ===============================
+#       Conexión con la Base de Datos
+# ===============================
+
 from main import cursor
 
+# ===============================
+#       Funciones auxiliares
+# ===============================
 
-# --- Convertir datos ventas a diccionarion ---
+
 def convertirDatosVentas(respuesta):
-
+    """
+    Convierte la lista de tuplas resultado de la consulta en una lista
+    de diccionarios con formato adecuado para las fechas, horas y tipos.
+    """
     registros = []
     for registro in respuesta:
         dicConvertido = []
@@ -37,12 +46,18 @@ def convertirDatosVentas(respuesta):
     return registros
 
 
-# --- CRUD ---
-# Create venta
+# ===============================
+#             CRUD
+# ===============================
+
 from controladores.date import convertirDate, convertirHora
 
 
+# ---- Crear nueva venta ----
 def sumarVenta(data):
+    """
+    Inserta una nueva venta en la tabla ventas, con formato adecuado para fecha y hora.
+    """
     fecha = convertirDate(data.fecha)
     hora = convertirHora(data.hora)
 
@@ -64,9 +79,11 @@ def sumarVenta(data):
     return {"Mensaje": "Venta sumada"}
 
 
-# Read ventas
+# ---- Leer todas las ventas ----
 def verVentas():
-
+    """
+    Recupera todas las ventas almacenadas y las convierte a formato legible.
+    """
     cursor.execute("SELECT * FROM ventas")
     respuesta = cursor.fetchall()
     nrespuesta = convertirDatosVentas(respuesta)
@@ -74,9 +91,16 @@ def verVentas():
     return nrespuesta
 
 
-# --- Query venta ---
-def buscarVentaId(vtas_id):
+# ===============================
+#          Consultas
+# ===============================
 
+
+# ---- Buscar venta por ID ----
+def buscarVentaId(vtas_id):
+    """
+    Busca una venta por su ID y devuelve sus datos formateados.
+    """
     cursor.execute("SELECT * FROM ventas WHERE vtas_id = %s", (vtas_id,))
     registro = cursor.fetchall()
     dicConvertido = []
@@ -109,6 +133,48 @@ def buscarVentaId(vtas_id):
     return dicConvertido
 
 
-# --- Incompelto ---
-def cancelarCompra(vtas_id):
+# ===============================
+#         Cancelaciones
+# ===============================
+
+
+# ---- Cancelar compra de viaje simple ----
+def cancelarCompraTVS(vtas_id):
+    """
+    Cancela una compra de viaje simple, actualiza cupos y elimina registros relacionados.
+    """
     venta = buscarVentaId(vtas_id)
+    cantidad = venta[0]["Cantidad"]
+    codigoViaje = venta[0]["Codigo de viaje"]
+
+    cursor.execute(
+        "UPDATE viaje_simple SET cupos = cupos + %s WHERE codigo = %s",
+        (cantidad, codigoViaje),
+    )
+    cursor.execute("DELETE FROM vtas_uc WHERE vtas_id = %s", (vtas_id,))
+    cursor.execute("DELETE FROM ventas WHERE vtas_id = %s", (vtas_id,))
+
+    cursor.commit()
+
+    return {"Mensaje": "Compra cancelada"}
+
+
+# ---- Cancelar compra de paquete de viaje ----
+def cancelarCompraTPV(vtas_id):
+    """
+    Cancela una compra de paquete de viaje, actualiza cupos y elimina registros relacionados.
+    """
+    venta = buscarVentaId(vtas_id)
+    cantidad = venta[0]["Cantidad"]
+    codigoViaje = venta[0]["Codigo de viaje"]
+
+    cursor.execute(
+        "UPDATE paquete_de_viajes SET cupos = cupos + %s WHERE codigo = %s",
+        (cantidad, codigoViaje),
+    )
+    cursor.execute("DELETE FROM vtas_uc WHERE vtas_id = %s", (vtas_id,))
+    cursor.execute("DELETE FROM ventas WHERE vtas_id = %s", (vtas_id,))
+
+    cursor.commit()
+
+    return {"Mensaje": "Compra cancelada"}
