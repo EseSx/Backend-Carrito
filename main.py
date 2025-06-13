@@ -37,6 +37,9 @@ def get_connection():
     return psycopg.connect(hostURL)
 
 
+conexion = psycopg.connect(hostURL)
+cursor = conexion.cursor()
+
 # ==============================================
 #                  Rutas
 # ==============================================

@@ -2,7 +2,7 @@
 #   Conexión con la Base de Datos
 # ===============================
 
-from main import get_connection
+from main import get_connection, cursor, conexion
 
 
 # ===============================
