@@ -2,7 +2,7 @@
 #       Conexión con la Base de Datos
 # ===============================
 
-from main import cursor
+from main import get_connection
 
 # ===============================
 #       Funciones auxiliares
@@ -61,22 +61,31 @@ def sumarVenta(data):
     fecha = convertirDate(data.fecha)
     hora = convertirHora(data.hora)
 
-    cursor.execute(
-        "INSERT INTO ventas (fecha, hora, medio_de_pago, cuotas, cantidad, codigo_vs, codigo_pv, precio) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-        (
-            fecha,
-            hora,
-            data.medio_de_pago,
-            data.cuotas,
-            data.cantidad,
-            data.codigo_vs,
-            data.codigo_pv,
-            data.precio,
-        ),
-    )
-    cursor.commit()
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO ventas (fecha, hora, medio_de_pago, cuotas, cantidad, codigo_vs, codigo_pv, precio) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+            (
+                fecha,
+                hora,
+                data.medio_de_pago,
+                data.cuotas,
+                data.cantidad,
+                data.codigo_vs,
+                data.codigo_pv,
+                data.precio,
+            ),
+        )
+        conn.commit()
 
-    return {"Mensaje": "Venta sumada"}
+        return {"Mensaje": "Venta sumada"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ---- Leer todas las ventas ----
@@ -84,11 +93,20 @@ def verVentas():
     """
     Recupera todas las ventas almacenadas y las convierte a formato legible.
     """
-    cursor.execute("SELECT * FROM ventas")
-    respuesta = cursor.fetchall()
-    nrespuesta = convertirDatosVentas(respuesta)
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM ventas")
+        respuesta = cur.fetchall()
+        nrespuesta = convertirDatosVentas(respuesta)
 
-    return nrespuesta
+        return nrespuesta
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ===============================
@@ -101,36 +119,45 @@ def buscarVentaId(vtas_id):
     """
     Busca una venta por su ID y devuelve sus datos formateados.
     """
-    cursor.execute("SELECT * FROM ventas WHERE vtas_id = %s", (vtas_id,))
-    registro = cursor.fetchall()
-    dicConvertido = []
-    fecha = registro[0][1]
-    fecha = fecha.strftime("%Y-%m-%d")
-    hora = registro[0][2]
-    hora = hora.strftime("%H:%M:%S")
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM ventas WHERE vtas_id = %s", (vtas_id,))
+        registro = cur.fetchall()
+        dicConvertido = []
+        fecha = registro[0][1]
+        fecha = fecha.strftime("%Y-%m-%d")
+        hora = registro[0][2]
+        hora = hora.strftime("%H:%M:%S")
 
-    if registro[0][6]:
-        codigo_de_viaje = registro[0][6]
-        tipo = "Viaje Simple"
-    else:
-        codigo_de_viaje = registro[0][7]
-        tipo = "Paquete de Viaje"
+        if registro[0][6]:
+            codigo_de_viaje = registro[0][6]
+            tipo = "Viaje Simple"
+        else:
+            codigo_de_viaje = registro[0][7]
+            tipo = "Paquete de Viaje"
 
-    dicConvertido.append(
-        {
-            "Id Venta": registro[0][0],
-            "Fecha": fecha,
-            "Hora": hora,
-            "Medio de pago": registro[0][3],
-            "Cuotas": registro[0][4],
-            "Cantidad": registro[0][5],
-            "Codigo de viaje": codigo_de_viaje,
-            "Tipo": tipo,
-            "Precio": registro[0][8],
-        }
-    )
+        dicConvertido.append(
+            {
+                "Id Venta": registro[0][0],
+                "Fecha": fecha,
+                "Hora": hora,
+                "Medio de pago": registro[0][3],
+                "Cuotas": registro[0][4],
+                "Cantidad": registro[0][5],
+                "Codigo de viaje": codigo_de_viaje,
+                "Tipo": tipo,
+                "Precio": registro[0][8],
+            }
+        )
 
-    return dicConvertido
+        return dicConvertido
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ===============================
@@ -147,16 +174,25 @@ def cancelarCompraTVS(vtas_id):
     cantidad = venta[0]["Cantidad"]
     codigoViaje = venta[0]["Codigo de viaje"]
 
-    cursor.execute(
-        "UPDATE viaje_simple SET cupos = cupos + %s WHERE codigo = %s",
-        (cantidad, codigoViaje),
-    )
-    cursor.execute("DELETE FROM vtas_uc WHERE vtas_id = %s", (vtas_id,))
-    cursor.execute("DELETE FROM ventas WHERE vtas_id = %s", (vtas_id,))
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "UPDATE viaje_simple SET cupos = cupos + %s WHERE codigo = %s",
+            (cantidad, codigoViaje),
+        )
+        cur.execute("DELETE FROM vtas_uc WHERE vtas_id = %s", (vtas_id,))
+        cur.execute("DELETE FROM ventas WHERE vtas_id = %s", (vtas_id,))
 
-    cursor.commit()
+        conn.commit()
 
-    return {"Mensaje": "Compra cancelada"}
+        return {"Mensaje": "Compra cancelada"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ---- Cancelar compra de paquete de viaje ----
@@ -168,13 +204,22 @@ def cancelarCompraTPV(vtas_id):
     cantidad = venta[0]["Cantidad"]
     codigoViaje = venta[0]["Codigo de viaje"]
 
-    cursor.execute(
-        "UPDATE paquete_de_viajes SET cupos = cupos + %s WHERE codigo = %s",
-        (cantidad, codigoViaje),
-    )
-    cursor.execute("DELETE FROM vtas_uc WHERE vtas_id = %s", (vtas_id,))
-    cursor.execute("DELETE FROM ventas WHERE vtas_id = %s", (vtas_id,))
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "UPDATE paquete_de_viajes SET cupos = cupos + %s WHERE codigo = %s",
+            (cantidad, codigoViaje),
+        )
+        cur.execute("DELETE FROM vtas_uc WHERE vtas_id = %s", (vtas_id,))
+        cur.execute("DELETE FROM ventas WHERE vtas_id = %s", (vtas_id,))
 
-    cursor.commit()
+        conn.commit()
 
-    return {"Mensaje": "Compra cancelada"}
+        return {"Mensaje": "Compra cancelada"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()

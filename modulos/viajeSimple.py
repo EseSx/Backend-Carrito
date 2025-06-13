@@ -2,7 +2,7 @@
 #       Conexión con la Base de Datos
 # ===============================
 
-from main import cursor
+from main import get_connection
 import datetime
 
 # ===============================
@@ -57,11 +57,20 @@ def verViajesSimples():
     Recupera todos los viajes simples de la base de datos y los devuelve
     en formato de lista de diccionarios con fechas y horas formateadas.
     """
-    cursor.execute("SELECT * FROM viaje_simple")
-    respuesta = cursor.fetchall()
-    nrepuesta = convertirDatosTVS(respuesta)
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM viaje_simple")
+        respuesta = cur.fetchall()
+        nrepuesta = convertirDatosTVS(respuesta)
 
-    return nrepuesta
+        return nrepuesta
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ---- Agregar un nuevo viaje simple ----
@@ -73,27 +82,36 @@ def agregarViajeSimple(data):
     hora = convertirHora(data.hora)
     fecha = convertirDate(data.fecha)
 
-    cursor.execute(
-        "INSERT INTO viaje_simple (codigo, nombre, descripcion, precio, origen, destino, transporte, fecha, hora, cupos, duracion_aprox, tipo_de_viaje, estado) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-        (
-            data.codigo,
-            data.nombre,
-            data.descripcion,
-            data.precio,
-            data.origen,
-            data.destino,
-            data.transporte,
-            fecha,
-            hora,
-            data.cupos,
-            data.duracion_aprox,
-            data.tipo_de_viaje,
-            data.estado,
-        ),
-    )
-    cursor.commit()
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO viaje_simple (codigo, nombre, descripcion, precio, origen, destino, transporte, fecha, hora, cupos, duracion_aprox, tipo_de_viaje, estado) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+            (
+                data.codigo,
+                data.nombre,
+                data.descripcion,
+                data.precio,
+                data.origen,
+                data.destino,
+                data.transporte,
+                fecha,
+                hora,
+                data.cupos,
+                data.duracion_aprox,
+                data.tipo_de_viaje,
+                data.estado,
+            ),
+        )
+        conn.commit()
 
-    return {"Mensaje": "Nuevo viaje simple agregado"}
+        return {"Mensaje": "Nuevo viaje simple agregado"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
 
 
 # ---- Eliminar un viaje simple por código ----
@@ -101,7 +119,16 @@ def quitarViajesimple(codigoDeViaje):
     """
     Elimina un viaje simple de la base de datos según su código.
     """
-    cursor.execute("DELETE FROM viaje_simple WHERE codigo = %s", (codigoDeViaje,))
-    cursor.commit()
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM viaje_simple WHERE codigo = %s", (codigoDeViaje,))
+        conn.commit()
 
-    return {"Mensaje": "Viaje borrado exitosamente"}
+        return {"Mensaje": "Viaje borrado exitosamente"}
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+    finally:
+        cur.close()
+        conn.close()
