@@ -27,12 +27,12 @@ from modulos.esquemas import Auto
 
 # ---- Crear nuevo auto ----
 @router.post("/ingresar")
-def ingresar_autos(data: Auto):
+async def ingresar_autos(data: Auto):
     """
     Recibe los datos de un auto y llama a la función para agregarlo a la base.
     """
-    agregarAuto(data)
-    return "no me completo"
+    res = agregarAuto(data)
+    return res
 
 
 # ---- Obtener lista de autos ----

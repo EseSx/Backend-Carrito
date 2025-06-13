@@ -43,7 +43,7 @@ def vinculaVSaAuto(vs_id, at_id):
     """
 
     cursor.execute("INSERT INTO vs_at (vs_id, at_id) VALUES(%s,%s)", (vs_id, at_id))
-    cursor.commit()
+    conexion.commit()
 
     return {"Mensaje": "Se ha asignado un auto a un viaje simple"}
 
