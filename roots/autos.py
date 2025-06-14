@@ -53,6 +53,9 @@ async def ingresar_autos(data: Auto):
 # ---- Crear nueva relacion de viaje simple a auto ----
 @router.post("/ingresarVinculoVS")
 async def ingresar_vinculos_VS(data: VinculoVSaAuto):
+    """
+    Recibe los ids de un auto y un viaje simple, llama a la funcion para agregar la relacion
+    """
     res = vinculaVSaAuto(data)
     return res
 
@@ -60,6 +63,9 @@ async def ingresar_vinculos_VS(data: VinculoVSaAuto):
 # ---- Crear nueva relacion de paquete de viaje a auto ----
 @router.post("/ingresarVinculoPV")
 async def ingresar_vinculos_PV(data: VinculoPVaAuto):
+    """
+    Recibe los ids de un auto y un paquete de viaje, llama a la funcion para agregar la relacion
+    """
     res = vincularPVaAuto(data)
     return res
 

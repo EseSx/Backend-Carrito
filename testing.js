@@ -85,10 +85,10 @@
 // export default FormularioIngresarCliente;
 
 let data = {
-  vs_id: 676713848,
+  pv_id: 2455,
 };
 
-fetch("http://0.0.0.0:8000/autos/obtenerVS", {
+fetch("http://0.0.0.0:8000/excursiones/obtenerPV", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

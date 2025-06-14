@@ -120,7 +120,24 @@ class Excursiones(BaseModel):
     """
 
     nombre: str
-    inicio: str  # Fecha de inicio (se recomienda formato 'dd/mm/yy')
-    final: str  # Fecha de finalización (se recomienda formato 'dd/mm/yy')
+    inicio: str  # Hora de inicio (se recomienda formato 'HH:MM')
+    final: str  # Hora de finalización (se recomienda formato 'HH:MM')
     descripcion: str
     lugar: str
+
+
+class ExcursionesID(BaseModel):
+    """
+    Modelo Pydantic para representar la ID de una Excursion
+    """
+
+    excursion_id: int
+
+
+class VinculoPVaExc(BaseModel):
+    """
+    Modelo Pydantic para representar el vinculo de un paquete de viaje a una excursion
+    """
+
+    pv_id: int
+    exc_id: int

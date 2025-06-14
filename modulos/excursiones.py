@@ -11,6 +11,7 @@ from main import get_connection
 
 
 # ---- Insertar Excursión ----
+# ANDA
 def agregarExcursiones(data):
     """
     Inserta una nueva excursión en la base de datos.
@@ -18,9 +19,25 @@ def agregarExcursiones(data):
     conn = get_connection()
     cur = conn.cursor()
     try:
+        cur.execute("SELECT MAX(excursion_id) FROM excursiones")
+        max_id = cur.fetchone()
+        max_id = int(max_id[0]) + 1
+
+        from controladores.date import convertirHora
+
+        horaInicio = convertirHora(data.inicio)
+        horaFinal = convertirHora(data.final)
+
         cur.execute(
-            "INSERT INTO excursiones (nombre, inicio, final, descripcion, lugar) VALUES(%s,%s,%s,%s,%s)",
-            (data.nombre, data.inicio, data.final, data.descripcion, data.lugar),
+            "INSERT INTO excursiones (excursion_id, nombre, inicio, final, descripcion, lugar) VALUES(%s,%s,%s,%s,%s,%s)",
+            (
+                max_id,
+                data.nombre,
+                horaInicio,
+                horaFinal,
+                data.descripcion,
+                data.lugar,
+            ),
         )
         conn.commit()
 
@@ -34,14 +51,17 @@ def agregarExcursiones(data):
 
 
 # ---- Eliminar Excursión ----
-def eliminarExcursion(excursion_id):
+# ANDA
+def eliminarExcursion(data):
     """
     Elimina una excursión por su ID.
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("DELETE FROM excursiones WHERE excursion_id = %s", (excursion_id,))
+        cur.execute(
+            "DELETE FROM excursiones WHERE excursion_id = %s", (data.excursion_id,)
+        )
         conn.commit()
 
         return {"Mensaje": "Borrado exitosamente"}
@@ -58,7 +78,8 @@ def eliminarExcursion(excursion_id):
 # ===============================
 
 
-def paqueteViajesExcursion(pv_id, exc_id):
+# ANDA
+def paqueteViajesExcursion(data):
     """
     Vincula una excursión con un paquete de viajes.
     """
@@ -66,7 +87,8 @@ def paqueteViajesExcursion(pv_id, exc_id):
     cur = conn.cursor()
     try:
         cur.execute(
-            "INSERT INTO pv_exc (pv_id, exc_id) VALUES (%s,%s)", (pv_id, exc_id)
+            "INSERT INTO pv_exc (pv_id, exc_id) VALUES (%s,%s)",
+            (data.pv_id, data.exc_id),
         )
         conn.commit()
 
@@ -84,7 +106,8 @@ def paqueteViajesExcursion(pv_id, exc_id):
 # ===============================
 
 
-def buscarExcursionporId(excursion_id):
+# ANDA
+def buscarExcursionporId(data):
     """
     Busca una excursión por su ID y devuelve sus detalles.
     """
@@ -92,7 +115,7 @@ def buscarExcursionporId(excursion_id):
     cur = conn.cursor()
     try:
         cur.execute(
-            "SELECT * FROM excursiones WHERE excursion_id = %s", (excursion_id,)
+            "SELECT * FROM excursiones WHERE excursion_id = %s", (data.excursion_id,)
         )
         respuesta = cur.fetchall()
         dicExcursiones = []
@@ -122,25 +145,24 @@ def buscarExcursionporId(excursion_id):
         conn.close()
 
 
-def verExcursionPaquete(pv_id):
+# ANDA
+def verExcursionPaquete(data):
+    from types import SimpleNamespace
+
     """
     Devuelve una lista de excursiones asociadas a un paquete de viaje.
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT exc_id FROM pv_exc WHERE pv_id = %s", (pv_id,))
+        cur.execute("SELECT exc_id FROM pv_exc WHERE pv_id = %s", (data.pv_id,))
         respuesta = cur.fetchall()
-        lista_pv_ids = []
-        for excursion in respuesta:
-            lista_pv_ids.append(excursion[0])
+        dicAutos = []
+        for i in respuesta:
+            data = SimpleNamespace(excursion_id=i[0])
+            dicAutos.append(buscarExcursionporId(data))
 
-        excursiones = []
-        for i in lista_pv_ids:
-            r = buscarExcursionporId(i)
-            excursiones.append(r)
-
-        return excursiones
+        return dicAutos
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}

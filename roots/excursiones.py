@@ -10,13 +10,24 @@ router = APIRouter()
 #       Importación de CRUD
 # ===============================
 
-from modulos.excursiones import agregarExcursiones, eliminarExcursion
+from modulos.excursiones import (
+    agregarExcursiones,
+    eliminarExcursion,
+    paqueteViajesExcursion,
+    buscarExcursionporId,
+    verExcursionPaquete,
+)
 
 # ===============================
 #       Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Excursiones
+from modulos.esquemas import (
+    Excursiones,
+    ExcursionesID,
+    VinculoPVaExc,
+    Paquete_de_viajeID,
+)
 
 
 # ===============================
@@ -34,13 +45,34 @@ def ingresar_excursiones(data: Excursiones):
     return res
 
 
-# ---- Obtener todas las excursiones ----
-@router.get("/obtener")
-def retornar_excursiones():
+# ---- Crear nueva relacion paquete de viajes a excursion ----
+@router.post("/ingresarVinculoPV")
+def ingresar_vinculo_PV(data: VinculoPVaExc):
     """
-    Devuelve la lista de todas las excursiones almacenadas.
+    Recibe datos de una excursión y la agrega a la base de datos.
     """
-    return
+    res = paqueteViajesExcursion(data)
+    return res
+
+
+# ---- Obtener todas las excursiones por ID ----
+@router.post("/obtenerID")
+def retornar_excursionesPorID(data: ExcursionesID):
+    """
+    Devuelve la lista de todas las excursiones almacenadas basandose en su ID.
+    """
+    res = buscarExcursionporId(data)
+    return res
+
+
+# ---- Obtener todas las excursiones relacionadas a un paquete de viajes ----
+@router.post("/obtenerPV")
+def retornar_excursionesPorPV(data: Paquete_de_viajeID):
+    """
+    Devuelve la lista de todas las excursiones almacenadas basandose en su ID.
+    """
+    res = verExcursionPaquete(data)
+    return res
 
 
 # ---- Modificar excursión existente ----
@@ -54,9 +86,9 @@ def modificar_excursiones():
 
 # ---- Eliminar excursión por ID ----
 @router.post("/eliminar")
-def eliminar_excursiones(excursion_id):
+def eliminar_excursiones(data: ExcursionesID):
     """
     Elimina una excursión dado su ID.
     """
-    res = eliminarExcursion(excursion_id)
+    res = eliminarExcursion(data)
     return res
