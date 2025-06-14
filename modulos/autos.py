@@ -8,6 +8,7 @@ from main import get_connection
 # ===============================
 #           CRUD Autos
 # ===============================
+from types import SimpleNamespace
 
 
 # ANDA
@@ -145,14 +146,13 @@ def verAutoPV(data):
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT * FROM exc_at WHERE pv_id = %s", (data.pv_id,))
+        cur.execute("SELECT at_id FROM exc_at WHERE pv_id = %s", (data.pv_id,))
         respuesta = cur.fetchall()
-        lista = []
+
         dicAutos = []
         for i in respuesta:
-            lista.append(i[1])
-        for n in lista:
-            dicAutos.append(verAutoID(n))
+            data = SimpleNamespace(auto_id=i[0])
+            dicAutos.append(verAutoID(data))
 
         return dicAutos
     except Exception as e:
