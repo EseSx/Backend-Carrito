@@ -12,6 +12,7 @@ from controladores.date import convertirDate, convertirHora
 
 
 # ---- Convertir datos paquete de viaje a diccionario ----
+# ANDA
 def convertirDatosTPV(respuesta):
     """
     Convierte la respuesta de la BD a lista de diccionarios con formato de fecha y hora.
@@ -46,20 +47,25 @@ def convertirDatosTPV(respuesta):
 
 
 # ---- Insertar paquete de viaje ----
+# ANDA
 def agregarPaquetedeViaje(data):
     """
     Inserta un nuevo paquete de viaje en la base de datos.
     """
     conn = get_connection()
     cur = conn.cursor()
+
     try:
+        cur.execute("SELECT MAX(codigo) FROM paquete_de_viajes")
+        max_id = cur.fetchone()
+        max_id = int(max_id[0]) + 1
         hora = convertirHora(data.hora)
         fecha = convertirDate(data.fecha)
 
         cur.execute(
             "INSERT INTO paquete_de_viajes (codigo, nombre, precio, origen, destino, estadia, tipo, descripcion, cupos, duracion, tipo_de_viaje, hora, fecha, estado) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
             (
-                data.codigo,
+                max_id,
                 data.nombre,
                 data.precio,
                 data.origen,
@@ -72,12 +78,12 @@ def agregarPaquetedeViaje(data):
                 data.tipo_de_viaje,
                 hora,
                 fecha,
-                data.estado,
+                "Disponible",
             ),
         )
         conn.commit()
 
-        return {"Mensaje": "Nuevo viaje simple agregado"}
+        return {"Mensaje": "Nuevo paquetede viajes agregado"}
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
@@ -87,6 +93,7 @@ def agregarPaquetedeViaje(data):
 
 
 # ---- Consultar todos los paquetes de viaje ----
+# ANDA
 def verPaquetedeViajes():
     """
     Devuelve una lista con todos los paquetes de viaje.
@@ -109,14 +116,17 @@ def verPaquetedeViajes():
 
 
 # ---- Eliminar paquete de viaje ----
-def quitarPaquetedeViaje(codigoDeViaje):
+# ANDA ---- Esperando respuesta ----
+def quitarPaquetedeViaje(data):
     """
     Elimina un paquete de viaje por su código.
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("DELETE FROM paquete_de_viajes WHERE codigo = %s", (codigoDeViaje,))
+        cur.execute(
+            "DELETE FROM paquete_de_viajes WHERE codigo = %s", (data.codigoDeViaje,)
+        )
         conn.commit()
 
         return {"Mensaje": "Viaje borrado exitosamente"}

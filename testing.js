@@ -85,10 +85,10 @@
 // export default FormularioIngresarCliente;
 
 let data = {
-  pv_id: 2455,
+  uc_id: 8,
 };
 
-fetch("http://0.0.0.0:8000/excursiones/obtenerPV", {
+fetch("http://0.0.0.0:8000/clientes/obtenerId", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -104,3 +104,7 @@ fetch("http://0.0.0.0:8000/excursiones/obtenerPV", {
   })
   .then((res) => console.log(res))
   .catch(console.error);
+
+// fetch("http://0.0.0.0:8000/clientes/obtener")
+//   .then((res) => res.json())
+//   .then((res) => console.log(res));

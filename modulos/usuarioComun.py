@@ -10,6 +10,7 @@ from main import get_connection
 
 
 # ---- Crear nuevo cliente ----
+# ANDA
 def crearCliente(data):
     """
     Inserta un nuevo cliente en la tabla usuario_comun.
@@ -21,13 +22,16 @@ def crearCliente(data):
         max_id = cur.fetchone()
         max_id = int(max_id[0]) + 1
 
+        from controladores.hashing import hash_password
+
+        contraseñaHasheada = hash_password(data.contraseña)
         cur.execute(
             "INSERT INTO usuario_comun (uc_id, nombre, apellido, contraseña, correo_electronico) VALUES(%s,%s,%s,%s,%s)",
             (
                 max_id,
                 data.nombre,
                 data.apellido,
-                data.contraseña,
+                contraseñaHasheada,
                 data.correo_electronico,
             ),
         )
@@ -43,6 +47,7 @@ def crearCliente(data):
 
 
 # ---- Ver todos los clientes ----
+# ANDA
 def verClientes():
     """
     Recupera todos los clientes de la base de datos.
@@ -77,14 +82,15 @@ def verClientes():
 
 
 # ---- Eliminar cliente por ID ----
-def eliminarUsuario(uc_id):
+# ANDA
+def eliminarUsuario(data):
     """
     Elimina un usuario de la tabla usuario_comun por su ID.
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("DELETE FROM usuario_comun WHERE uc_Id = %s", (uc_id,))
+        cur.execute("DELETE FROM usuario_comun WHERE uc_Id = %s", (data.uc_id,))
         conn.commit()
 
         return {"Mensaje": "Se ha eliminado un usuario correctamente"}
@@ -97,14 +103,15 @@ def eliminarUsuario(uc_id):
 
 
 # ---- Ver cliente por ID ----
-def verClienteId(uc_id):
+# ANDA
+def verClienteId(data):
     """
     Busca un cliente por su ID y devuelve sus datos.
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT * FROM usuario_comun WHERE uc_id = %s", (uc_id,))
+        cur.execute("SELECT * FROM usuario_comun WHERE uc_id = %s", (data.uc_id,))
         respuesta = cur.fetchall()
         dicConvertido = []
         dicConvertido.append(

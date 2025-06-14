@@ -20,7 +20,7 @@ from modulos.paqueteDeViajes import (
 #       Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Paquete_de_viaje
+from modulos.esquemas import Paquete_de_viaje, CodigoPauqueteDeViaje
 
 
 # ===============================
@@ -59,9 +59,9 @@ def modificar_paquetesDeViaje():
 
 # ---- Eliminar paquete de viaje por código ----
 @router.post("/eliminar")
-def eliminar_paquetesDeViaje(codigoDeViaje):
+def eliminar_paquetesDeViaje(data: CodigoPauqueteDeViaje):
     """
     Elimina un paquete de viaje dado su código identificador.
     """
-    res = quitarPaquetedeViaje(codigoDeViaje)
+    res = quitarPaquetedeViaje(data)
     return res

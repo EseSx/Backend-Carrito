@@ -15,6 +15,14 @@ class Usuarios_comunes(BaseModel):
     correo_electronico: str
 
 
+class Usuarios_comunesID(BaseModel):
+    """
+    Modelo Pydantic para la creación de usuarios comunes.
+    """
+
+    uc_id: int
+
+
 class Ventas(BaseModel):
     """
     Modelo Pydantic para registrar información de una venta.
@@ -66,8 +74,17 @@ class Paquete_de_viaje(BaseModel):
     origen: str
     destino: str
     estadia: str
-    tipo: str  # Valores: 'nacional' o 'internacional'
-    estado: str
+    tipo: str  # Valores: 'solo ida' o 'ida y vuelta'
+    descripcion: str
+    cupos: int
+    duracion: str
+    tipo_de_viaje: str  # Valores: 'nacional' o 'internacional'
+    hora: str  # Formato recomendado: 'HH:MM'
+    fecha: str  # Formato recomendado: 'dd/mm/yy'
+
+
+class CodigoPauqueteDeViaje(BaseModel):
+    codigoDeViaje: int
 
 
 class Paquete_de_viajeID(BaseModel):

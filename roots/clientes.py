@@ -21,7 +21,7 @@ from modulos.usuarioComun import (
 #       Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Usuarios_comunes
+from modulos.esquemas import Usuarios_comunes, Usuarios_comunesID
 
 
 # ===============================
@@ -51,19 +51,19 @@ async def retornar_usuario():
 
 # ---- Eliminar usuario común por ID ----
 @router.post("/eliminar")
-async def eliminar_usuario(uc_id):
+async def eliminar_usuario(data: Usuarios_comunesID):
     """
     Elimina un usuario común dado su ID.
     """
-    res = eliminarUsuario(uc_id)
+    res = eliminarUsuario(data)
     return res
 
 
 # ---- Obtener usuario común por ID ----
 @router.post("/obtenerId")
-async def retornarPorID_usuario(uc_id):
+async def retornarPorID_usuario(data: Usuarios_comunesID):
     """
     Devuelve los datos de un usuario común específico por ID.
     """
-    res = verClienteId(uc_id)
+    res = verClienteId(data)
     return res
