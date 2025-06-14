@@ -48,6 +48,14 @@ class Viaje_simple(BaseModel):
     estado: str
 
 
+class Viaje_simpleID(BaseModel):
+    """
+    Modelo Pydantic para representar la ID de un viaje simple.
+    """
+
+    vs_id: int
+
+
 class Paquete_de_viaje(BaseModel):
     """
     Modelo Pydantic para representar un paquete de viaje.

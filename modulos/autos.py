@@ -138,7 +138,7 @@ def verAutoID(data):
         conn.close()
 
 
-# PENDIENTE
+# ANDA
 def verAutoPV(data):
     """
     Devuelve todos los autos vinculados a un paquete de viajes.
@@ -163,24 +163,22 @@ def verAutoPV(data):
         conn.close()
 
 
-def verAutoVs(vs_id):
+# ANDA
+def verAutoVs(data):
     """
     Devuelve todos los autos vinculados a un viaje simple.
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT * FROM vs_at WHERE vs_id = %s", (vs_id,))
+        cur.execute("SELECT at_id FROM vs_at WHERE vs_id = %s", (data.vs_id,))
         respuesta = cur.fetchall()
-        autos = []
-        autoInfo = []
-        for i in respuesta[0]:
-            autos.append(respuesta[1][1])
-        for auto in autos:
-            r = verAutoID(auto)
-            autoInfo.append(r)
+        dicAutos = []
+        for i in respuesta:
+            data = SimpleNamespace(auto_id=i[0])
+            dicAutos.append(verAutoID(data))
 
-        return autoInfo
+        return dicAutos
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
