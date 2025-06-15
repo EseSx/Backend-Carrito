@@ -132,7 +132,15 @@ def quitarPaquetedeViaje(data):
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("DELETE FROM ventas WHERE vtas_id = %s", (data.codigoDeViaje,))
+        cur.execute(
+            "SELECT COUNT(*) FROM ventas WHERE vtas_id = %s", (data.codigoDeViaje,)
+        )
+        ventas_count = cur.fetchone()[0]
+
+        if ventas_count > 0:
+            return {
+                "error": f"No se puede eliminar el viaje {data.codigoDeViaje} porque tiene {ventas_count} ventas asociadas"
+            }
         cur.execute(
             "DELETE FROM paquete_de_viajes WHERE codigo = %s", (data.codigoDeViaje,)
         )
