@@ -3,14 +3,15 @@
 # ===============================
 
 from main import get_connection
-import datetime
 
 # ===============================
 #       Funciones auxiliares
 # ===============================
 
+import datetime
+from controladores.date import convertirDate, convertirHora
 
-# ANDA
+
 def convertirDatosTVS(respuesta):
     """
     Convierte la lista de tuplas resultado de la consulta en una lista
@@ -47,11 +48,8 @@ def convertirDatosTVS(respuesta):
 #             CRUD
 # ===============================
 
-from controladores.date import convertirDate, convertirHora
-
 
 # ---- Leer todos los viajes simples ----
-# ANDA
 def verViajesSimples():
     """
     Recupera todos los viajes simples de la base de datos y los devuelve
@@ -65,16 +63,17 @@ def verViajesSimples():
         nrepuesta = convertirDatosTVS(respuesta)
 
         return nrepuesta
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
 # ---- Agregar un nuevo viaje simple ----
-# ANDA
 def agregarViajeSimple(data):
     """
     Inserta un nuevo viaje simple en la base de datos,
@@ -110,16 +109,17 @@ def agregarViajeSimple(data):
         conn.commit()
 
         return {"Mensaje": "Nuevo viaje simple agregado"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
 # ---- Eliminar un viaje simple por código ----
-# ANDA
 def quitarViajesimple(codigoDeViaje):
     """
     Elimina un viaje simple de la base de datos según su código.
@@ -131,9 +131,11 @@ def quitarViajesimple(codigoDeViaje):
         conn.commit()
 
         return {"Mensaje": "Viaje borrado exitosamente"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()

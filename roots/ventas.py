@@ -16,7 +16,7 @@ from modulos.ventas import sumarVenta, verVentas, buscarVentaId, cancelarCompraT
 #       Importación de Modelos
 # ===============================
 
-from modulos.esquemas import VentaRequest, VentaID
+from modulos.esquemas import Venta_request, Venta_id
 
 
 # ===============================
@@ -26,7 +26,7 @@ from modulos.esquemas import VentaRequest, VentaID
 
 # ---- Crear nueva venta ----
 @router.post("/ingresar")
-def ingresar_ventas(data: VentaRequest):
+def ingresar_ventas(data: Venta_request):
     """
     Registra una nueva venta en la base de datos.
     """
@@ -46,26 +46,17 @@ def retornar_ventas():
 
 # ---- Obtener todas las ventas ----
 @router.post("/obtenerID")
-def retornar_ventas(data: VentaID):
+def retornar_ventas(data: Venta_id):
     """
-    Devuelve la lista de todas las ventas registradas.
+    Devuelve la lista de todas las ventas registradas por id.
     """
     res = buscarVentaId(data)
     return res
 
 
-# ---- Modificar venta existente ----
-@router.post("/modificar")
-def modificar_ventas():
-    """
-    Actualiza los datos de una venta específica.
-    """
-    return
-
-
 # ---- Eliminar venta existente ----
 @router.post("/eliminarTVS")
-def eliminar_ventas(data: VentaID):
+def eliminar_ventas(data: Venta_id):
     """
     Elimina una venta de la base de datos.
     """

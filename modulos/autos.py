@@ -4,17 +4,20 @@
 
 from main import get_connection
 
+# ===============================
+#     funciones auxiliares
+# ===============================
+
+from types import SimpleNamespace
 
 # ===============================
 #           CRUD Autos
 # ===============================
-from types import SimpleNamespace
 
 
-# ANDA
 def agregarAuto(data):
     """
-    Inserta un nuevo auto en la tabla 'autos'.
+    Inserta un nuevo auto en la tabla 'auto'.
     """
     conn = get_connection()
     cur = conn.cursor()
@@ -22,7 +25,10 @@ def agregarAuto(data):
     try:
         cur.execute("SELECT MAX(auto_id) FROM auto")
         max_id = cur.fetchone()
-        max_id = int(max_id[0]) + 1
+        if max_id is None:
+            max_id = 1
+        else:
+            max_id = int(max_id[0]) + 1
 
         cur.execute(
             "INSERT INTO auto (auto_id, modelo, disponibles, precio_por_dia) VALUES(%s,%s,%s,%s)",
@@ -31,29 +37,33 @@ def agregarAuto(data):
         conn.commit()
 
         return {"mensaje": "Nuevo auto cargado exitosamente"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
-# ANDA
 def borrarAuto(data):
     """
     Elimina un auto de la tabla 'auto' por su ID.
     """
     conn = get_connection()
     cur = conn.cursor()
+
     try:
         cur.execute("DELETE FROM auto WHERE auto_id = %s", (data.auto_id,))
         conn.commit()
 
         return {"Mensaje": "Auto eliminado exitosamente"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
@@ -64,7 +74,6 @@ def borrarAuto(data):
 # ===============================
 
 
-# ANDA
 def vinculaVSaAuto(data):
     """
     Vincula un auto (at_id) a un viaje simple (vs_id).
@@ -78,15 +87,16 @@ def vinculaVSaAuto(data):
         conn.commit()
 
         return {"Mensaje": "Se ha asignado un auto a un viaje simple"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
-# ANDA
 def vincularPVaAuto(data):
     """
     Vincula un auto (at_id) a un paquete de viajes (pv_id).
@@ -99,9 +109,11 @@ def vincularPVaAuto(data):
         )
 
         return {"Mensaje": "Se ha asignado un auto a un paquete de viajes"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
@@ -112,7 +124,6 @@ def vincularPVaAuto(data):
 # ===============================
 
 
-# ANDA
 def verAutoID(data):
     """
     Devuelve la información de un auto por su ID.
@@ -130,15 +141,16 @@ def verAutoID(data):
         }
 
         return respuesta
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
-# ANDA
 def verAutoPV(data):
     """
     Devuelve todos los autos vinculados a un paquete de viajes.
@@ -155,15 +167,16 @@ def verAutoPV(data):
             dicAutos.append(verAutoID(data))
 
         return dicAutos
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
-# ANDA
 def verAutoVs(data):
     """
     Devuelve todos los autos vinculados a un viaje simple.
@@ -179,9 +192,11 @@ def verAutoVs(data):
             dicAutos.append(verAutoID(data))
 
         return dicAutos
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()

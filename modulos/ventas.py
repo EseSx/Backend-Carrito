@@ -8,8 +8,16 @@ from main import get_connection
 #       Funciones auxiliares
 # ===============================
 
+from controladores.date import conseguirDatoActual
+from controladores.cupos import (
+    restarCupoTPV,
+    restarCupoTVS,
+    consultarCuposTPV,
+    consultarCuposTVS,
+)
+from types import SimpleNamespace
 
-# ANDA
+
 def convertirDatosVentas(respuesta):
     """
     Convierte la lista de tuplas resultado de la consulta en una lista
@@ -48,11 +56,8 @@ def convertirDatosVentas(respuesta):
 #             CRUD
 # ===============================
 
-from controladores.date import convertirDate, convertirHora, conseguirDatoActual
-
 
 # ---- Crear nueva venta ----
-# ANDA
 def sumarVenta(data):
     """
     Inserta una nueva venta en la tabla ventas, con formato adecuado para fecha y hora.
@@ -96,13 +101,6 @@ def sumarVenta(data):
             "INSERT INTO vtas_uc (vtas_id, uc_id) VALUES(%s,%s)", (vtas_id, uc_id)
         )
 
-        from controladores.cupos import (
-            restarCupoTPV,
-            restarCupoTVS,
-            consultarCuposTPV,
-            consultarCuposTVS,
-        )
-
         if data.data.codigo_vs:
             # Consultar cupos es por si llegara a 0 y hay que marcarle no disponible
             restarCupoTVS(data.data.codigo_vs, data.data.cantidad)
@@ -115,16 +113,17 @@ def sumarVenta(data):
         conn.commit()
 
         return {"Mensaje": "Venta sumada"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
 # ---- Leer todas las ventas ----
-# ANDA
 def verVentas():
     """
     Recupera todas las ventas almacenadas y las convierte a formato legible.
@@ -137,9 +136,11 @@ def verVentas():
         nrespuesta = convertirDatosVentas(respuesta)
 
         return nrespuesta
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
@@ -151,7 +152,6 @@ def verVentas():
 
 
 # ---- Buscar venta por ID ----
-# ANDA
 def buscarVentaId(data):
     """
     Busca una venta por su ID y devuelve sus datos formateados.
@@ -186,9 +186,11 @@ def buscarVentaId(data):
         }
 
         return dicConvertido
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
@@ -200,12 +202,10 @@ def buscarVentaId(data):
 
 
 # ---- Cancelar compra de viaje simple ----
-# ANDA
 def cancelarCompraTVS(vtas_id):
     """
     Cancela una compra de viaje simple, actualiza cupos y elimina registros relacionados.
     """
-    from types import SimpleNamespace
 
     data = {"vtas_id": vtas_id}
     data = SimpleNamespace(**data)
@@ -229,27 +229,24 @@ def cancelarCompraTVS(vtas_id):
 
         conn.commit()
 
-        from controladores.cupos import consultarCuposTVS
-
         consultarCuposTVS(codigoViaje)
 
         return {"Mensaje": "Compra cancelada"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
 # ---- Cancelar compra de paquete de viaje ----
-# ANDA
 def cancelarCompraTPV(vtas_id):
     """
     Cancela una compra de paquete de viaje, actualiza cupos y elimina registros relacionados.
     """
-
-    from types import SimpleNamespace
 
     data = {"vtas_id": vtas_id}
     data = SimpleNamespace(**data)
@@ -269,14 +266,14 @@ def cancelarCompraTPV(vtas_id):
 
         conn.commit()
 
-        from controladores.cupos import consultarCuposTPV
-
         consultarCuposTPV(codigoViaje)
 
         return {"Mensaje": "Compra cancelada"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()

@@ -16,7 +16,7 @@ from modulos.viajeSimple import verViajesSimples, agregarViajeSimple, quitarViaj
 #       Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Viaje_simple, Viaje_simpleID
+from modulos.esquemas import Viaje_simple, Viaje_simple_id
 
 
 # ===============================
@@ -43,18 +43,9 @@ def retornar_viaje_simple():
     return verViajesSimples()
 
 
-# ---- Modificar viaje simple ----
-@router.post("/modificar")
-def modificar_viaje_simple():
-    """
-    Actualiza la información de un viaje simple específico.
-    """
-    return
-
-
 # ---- Eliminar viaje simple ----
 @router.post("/eliminar")
-def eliminar_viaje_simple(data: Viaje_simpleID):
+def eliminar_viaje_simple(data: Viaje_simple_id):
     """
     Elimina un viaje simple de la base de datos usando su código.
     """

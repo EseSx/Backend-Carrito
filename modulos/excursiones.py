@@ -4,6 +4,12 @@
 
 from main import get_connection
 
+# ===============================
+#     funciones auxiliares
+# ===============================
+
+from controladores.date import convertirHora
+from types import SimpleNamespace
 
 # ===============================
 #             CRUD
@@ -11,7 +17,6 @@ from main import get_connection
 
 
 # ---- Insertar Excursión ----
-# ANDA
 def agregarExcursiones(data):
     """
     Inserta una nueva excursión en la base de datos.
@@ -21,9 +26,10 @@ def agregarExcursiones(data):
     try:
         cur.execute("SELECT MAX(excursion_id) FROM excursiones")
         max_id = cur.fetchone()
-        max_id = int(max_id[0]) + 1
-
-        from controladores.date import convertirHora
+        if max_id is None:
+            max_id = 1
+        else:
+            max_id = int(max_id[0]) + 1
 
         horaInicio = convertirHora(data.inicio)
         horaFinal = convertirHora(data.final)
@@ -42,16 +48,17 @@ def agregarExcursiones(data):
         conn.commit()
 
         return {"Mensaje": "Se ha agregado la excursion exitosamente"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
 # ---- Eliminar Excursión ----
-# ANDA
 def eliminarExcursion(data):
     """
     Elimina una excursión por su ID.
@@ -65,9 +72,11 @@ def eliminarExcursion(data):
         conn.commit()
 
         return {"Mensaje": "Borrado exitosamente"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
@@ -78,7 +87,6 @@ def eliminarExcursion(data):
 # ===============================
 
 
-# ANDA
 def paqueteViajesExcursion(data):
     """
     Vincula una excursión con un paquete de viajes.
@@ -93,9 +101,11 @@ def paqueteViajesExcursion(data):
         conn.commit()
 
         return {"Mensaje": "Se ha vinculado una excursion con un paquete de viajes"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
@@ -106,7 +116,6 @@ def paqueteViajesExcursion(data):
 # ===============================
 
 
-# ANDA
 def buscarExcursionporId(data):
     """
     Busca una excursión por su ID y devuelve sus detalles.
@@ -137,18 +146,17 @@ def buscarExcursionporId(data):
         )
 
         return dicExcursiones
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
-# ANDA
 def verExcursionPaquete(data):
-    from types import SimpleNamespace
-
     """
     Devuelve una lista de excursiones asociadas a un paquete de viaje.
     """
@@ -163,9 +171,11 @@ def verExcursionPaquete(data):
             dicAutos.append(buscarExcursionporId(data))
 
         return dicAutos
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()

@@ -5,12 +5,17 @@
 from main import get_connection
 
 # ===============================
+#     funciones auxiliares
+# ===============================
+
+from controladores.hashing import hash_password
+
+# ===============================
 #             CRUD
 # ===============================
 
 
 # ---- Crear nuevo cliente ----
-# ANDA
 def crearCliente(data):
     """
     Inserta un nuevo cliente en la tabla usuario_comun.
@@ -20,9 +25,10 @@ def crearCliente(data):
     try:
         cur.execute("SELECT MAX(uc_id) FROM usuario_comun")
         max_id = cur.fetchone()
-        max_id = int(max_id[0]) + 1
-
-        from controladores.hashing import hash_password
+        if max_id is None:
+            max_id = 1
+        else:
+            max_id = int(max_id[0]) + 1
 
         contraseñaHasheada = hash_password(data.contraseña)
         cur.execute(
@@ -38,16 +44,17 @@ def crearCliente(data):
         conn.commit()
 
         return {"Mensaje": "Se ha cargado un nuevo cliente"}
+
     except Exception as e:
         conn.rollback()
-        return {"error": str(e), "maxid": max_id}
+        return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
 # ---- Ver todos los clientes ----
-# ANDA
 def verClientes():
     """
     Recupera todos los clientes de la base de datos.
@@ -73,16 +80,17 @@ def verClientes():
             usuarios.append(dicConvertido)
 
         return usuarios
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
 # ---- Eliminar cliente por ID ----
-# ANDA
 def eliminarUsuario(data):
     """
     Elimina un usuario de la tabla usuario_comun por su ID.
@@ -94,16 +102,17 @@ def eliminarUsuario(data):
         conn.commit()
 
         return {"Mensaje": "Se ha eliminado un usuario correctamente"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
 # ---- Ver cliente por ID ----
-# ANDA
 def verClienteId(data):
     """
     Busca un cliente por su ID y devuelve sus datos.
@@ -125,9 +134,11 @@ def verClienteId(data):
         )
 
         return dicConvertido
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()

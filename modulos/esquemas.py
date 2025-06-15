@@ -16,9 +16,9 @@ class Usuarios_comunes(BaseModel):
     correo_electronico: str
 
 
-class Usuarios_comunesID(BaseModel):
+class Usuarios_comunes_id(BaseModel):
     """
-    Modelo Pydantic para la creación de usuarios comunes.
+    Modelo Pydantic para obtener la id de un usuario comun.
     """
 
     uc_id: int
@@ -37,12 +37,20 @@ class Ventas(BaseModel):
     precio: float
 
 
-class VentaRequest(BaseModel):
+class Venta_request(BaseModel):
+    """
+    Modelo Pydantic para registrar información de una venta y relacionarlo a un usuario.
+    """
+
     data: Ventas
     correo_electronico: str
 
 
-class VentaID(BaseModel):
+class Venta_id(BaseModel):
+    """
+    Modelo Pydantic para obtener la id de una venta.
+    """
+
     vtas_id: int
 
 
@@ -64,7 +72,7 @@ class Viaje_simple(BaseModel):
     tipo_de_viaje: str  # Valores: 'solo ida' o 'ida y vuelta'
 
 
-class Viaje_simpleID(BaseModel):
+class Viaje_simple_id(BaseModel):
     """
     Modelo Pydantic para representar la ID de un viaje simple.
     """
@@ -91,11 +99,15 @@ class Paquete_de_viaje(BaseModel):
     fecha: str  # Formato recomendado: 'dd/mm/yy'
 
 
-class CodigoPauqueteDeViaje(BaseModel):
+class Codigo_paquete_de_viaje(BaseModel):
+    """
+    Modelo Pydantic para obtener el codigo de un paquete de viaje
+    """
+
     codigoDeViaje: int
 
 
-class Paquete_de_viajeID(BaseModel):
+class Paquete_de_viaje_id(BaseModel):
     """
     Modelo Pydantic para representar la id de un paquete de viaje.
     """
@@ -113,7 +125,7 @@ class Auto(BaseModel):
     precio_por_dia: float
 
 
-class AutoID(BaseModel):
+class Auto_id(BaseModel):
     """
     Modelo Pydantic para representar el id de un auto.
     """
@@ -121,7 +133,7 @@ class AutoID(BaseModel):
     auto_id: int
 
 
-class VinculoVSaAuto(BaseModel):
+class Vinculo_vs_a_auto(BaseModel):
     """
     Modelo Pydantic para representar el vinculo de un viaje simple a un auto
     """
@@ -130,9 +142,9 @@ class VinculoVSaAuto(BaseModel):
     at_id: int
 
 
-class VinculoPVaAuto(BaseModel):
+class Vinculo_pv_a_auto(BaseModel):
     """
-    Modelo Pydantic para representar el vinculo de un viaje simple a un auto
+    Modelo Pydantic para representar el vinculo de un paquete de viajes a un auto
     """
 
     pv_id: int
@@ -151,17 +163,17 @@ class Excursiones(BaseModel):
     lugar: str
 
 
-class ExcursionesID(BaseModel):
+class Excursiones_id(BaseModel):
     """
-    Modelo Pydantic para representar la ID de una Excursion
+    Modelo Pydantic para representar la ID de una Excursion.
     """
 
     excursion_id: int
 
 
-class VinculoPVaExc(BaseModel):
+class Vinculo_pv_a_exc(BaseModel):
     """
-    Modelo Pydantic para representar el vinculo de un paquete de viaje a una excursion
+    Modelo Pydantic para representar el vinculo de un paquete de viaje a una excursion.
     """
 
     pv_id: int

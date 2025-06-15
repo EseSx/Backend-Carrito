@@ -20,7 +20,7 @@ from modulos.paqueteDeViajes import (
 #       Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Paquete_de_viaje, CodigoPauqueteDeViaje
+from modulos.esquemas import Paquete_de_viaje, Codigo_paquete_de_viaje
 
 
 # ===============================
@@ -48,18 +48,9 @@ def retornar_paquetesDeViaje():
     return res
 
 
-# ---- Modificar paquete de viaje existente ---
-@router.post("/modificar")
-def modificar_paquetesDeViaje():
-    """
-    Actualiza los datos de un paquete de viaje existente.
-    """
-    return
-
-
 # ---- Eliminar paquete de viaje por código ----
 @router.post("/eliminar")
-def eliminar_paquetesDeViaje(data: CodigoPauqueteDeViaje):
+def eliminar_paquetesDeViaje(data: Codigo_paquete_de_viaje):
     """
     Elimina un paquete de viaje dado su código identificador.
     """

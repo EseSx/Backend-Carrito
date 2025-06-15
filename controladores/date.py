@@ -22,10 +22,12 @@ def convertirHora(hora):
 
 
 def conseguirDatoActual():
+    """
+    Devuelve la fecha y hora actual
+    """
     ahora = datetime.now()
 
     fecha = ahora.strftime("%Y-%m-%d")
     hora = ahora.strftime("%H:%M")
 
-    print(fecha, hora)
     return {"fecha": fecha, "hora": hora}

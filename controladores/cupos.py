@@ -26,6 +26,7 @@ def consultarCuposTVS(codigoViaje):
             )
             conn.commit()
             return {"Mensaje": "Ya no tiene cupos disponibles."}
+
         else:
             cur.execute(
                 "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
@@ -33,9 +34,11 @@ def consultarCuposTVS(codigoViaje):
             )
             conn.commit()
             return {"Mensaje": "Sigue con cupos disponibles."}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
@@ -64,9 +67,11 @@ def restarCupoTVS(codigoViaje, cantidad):
             return {
                 "Mensaje": "No quedan cupos disponibles, no se puede realizar la compra"
             }
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
@@ -98,15 +103,18 @@ def consultarCuposTPV(codigoViaje):
             )
             conn.commit()
             return {"Mensaje": "Ya no tiene cupos disponibles."}
+
         else:
             cur.execute(
                 "UPDATE paquete_de_viajes SET estado = %s WHERE codigo = %s",
                 ("disponible", codigoViaje),
             )
             return {"Mensaje": "Sigue con cupos disponibles."}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
@@ -137,9 +145,11 @@ def restarCupoTPV(codigoViaje, cantidad):
             return {
                 "Mensaje": "No quedan cupos disponibles o no hay para esa cantidad, no se puede realizar la compra"
             }
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()

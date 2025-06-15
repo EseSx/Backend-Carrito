@@ -27,11 +27,11 @@ from modulos.autos import (
 
 from modulos.esquemas import (
     Auto,
-    AutoID,
-    VinculoVSaAuto,
-    VinculoPVaAuto,
-    Paquete_de_viajeID,
-    Viaje_simpleID,
+    Auto_id,
+    Vinculo_vs_a_auto,
+    Vinculo_pv_a_auto,
+    Paquete_de_viaje_id,
+    Viaje_simple_id,
 )
 
 
@@ -52,7 +52,7 @@ async def ingresar_autos(data: Auto):
 
 # ---- Crear nueva relacion de viaje simple a auto ----
 @router.post("/ingresarVinculoVS")
-async def ingresar_vinculos_VS(data: VinculoVSaAuto):
+async def ingresar_vinculos_VS(data: Vinculo_vs_a_auto):
     """
     Recibe los ids de un auto y un viaje simple, llama a la funcion para agregar la relacion
     """
@@ -62,7 +62,7 @@ async def ingresar_vinculos_VS(data: VinculoVSaAuto):
 
 # ---- Crear nueva relacion de paquete de viaje a auto ----
 @router.post("/ingresarVinculoPV")
-async def ingresar_vinculos_PV(data: VinculoPVaAuto):
+async def ingresar_vinculos_PV(data: Vinculo_pv_a_auto):
     """
     Recibe los ids de un auto y un paquete de viaje, llama a la funcion para agregar la relacion
     """
@@ -72,9 +72,9 @@ async def ingresar_vinculos_PV(data: VinculoPVaAuto):
 
 # ---- Obtener lista de autos por ID ----
 @router.post("/obtenerID")
-async def retornar_autosPorID(data: AutoID):
+async def retornar_autosPorID(data: Auto_id):
     """
-    Devuelve la lista de autos almacenados (pendiente implementación).
+    Devuelve la lista de autos almacenados por id.
     """
     res = verAutoID(data)
     return res
@@ -82,9 +82,9 @@ async def retornar_autosPorID(data: AutoID):
 
 # ---- Obtener lista de autos relacionados a un paquete de viajes ----
 @router.post("/obtenerPV")
-async def retornar_autosPorPV(data: Paquete_de_viajeID):
+async def retornar_autosPorPV(data: Paquete_de_viaje_id):
     """
-    Devuelve la lista de autos almacenados (pendiente implementación).
+    Devuelve la lista de autos almacenados por paquete de viaje.
     """
     res = verAutoPV(data)
     return res
@@ -92,27 +92,17 @@ async def retornar_autosPorPV(data: Paquete_de_viajeID):
 
 # ---- Obtener lista de autos relacionados a un viaje simple ----
 @router.post("/obtenerVS")
-async def retornar_autosPorVS(data: Viaje_simpleID):
+async def retornar_autosPorVS(data: Viaje_simple_id):
     """
-    Devuelve la lista de autos almacenados (pendiente implementación).
+    Devuelve la lista de autos almacenados por viaje simple.
     """
     res = verAutoVs(data)
     return res
 
 
-# Preguntar si no vamos a añadir
-# ---- Modificar datos de un auto ----
-@router.post("/modificar")
-async def modificar_autos():
-    """
-    Actualiza los datos de un auto existente (pendiente implementación).
-    """
-    return
-
-
 # ---- Eliminar un auto por ID ----
 @router.post("/eliminar")
-async def eliminar_autos(data: AutoID):
+async def eliminar_autos(data: Auto_id):
     """
     Elimina un auto de la base de datos utilizando su ID.
     """

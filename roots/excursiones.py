@@ -24,9 +24,9 @@ from modulos.excursiones import (
 
 from modulos.esquemas import (
     Excursiones,
-    ExcursionesID,
-    VinculoPVaExc,
-    Paquete_de_viajeID,
+    Excursiones_id,
+    Vinculo_pv_a_exc,
+    Paquete_de_viaje_id,
 )
 
 
@@ -47,9 +47,9 @@ def ingresar_excursiones(data: Excursiones):
 
 # ---- Crear nueva relacion paquete de viajes a excursion ----
 @router.post("/ingresarVinculoPV")
-def ingresar_vinculo_PV(data: VinculoPVaExc):
+def ingresar_vinculo_PV(data: Vinculo_pv_a_exc):
     """
-    Recibe datos de una excursión y la agrega a la base de datos.
+    Recibe las ids de un paquete de viajes y una excursion, y los relaciona.
     """
     res = paqueteViajesExcursion(data)
     return res
@@ -57,7 +57,7 @@ def ingresar_vinculo_PV(data: VinculoPVaExc):
 
 # ---- Obtener todas las excursiones por ID ----
 @router.post("/obtenerID")
-def retornar_excursionesPorID(data: ExcursionesID):
+def retornar_excursionesPorID(data: Excursiones_id):
     """
     Devuelve la lista de todas las excursiones almacenadas basandose en su ID.
     """
@@ -67,26 +67,17 @@ def retornar_excursionesPorID(data: ExcursionesID):
 
 # ---- Obtener todas las excursiones relacionadas a un paquete de viajes ----
 @router.post("/obtenerPV")
-def retornar_excursionesPorPV(data: Paquete_de_viajeID):
+def retornar_excursionesPorPV(data: Paquete_de_viaje_id):
     """
-    Devuelve la lista de todas las excursiones almacenadas basandose en su ID.
+    Devuelve la lista de todas las excursiones almacenadas basandose en paquetes de viaje.
     """
     res = verExcursionPaquete(data)
     return res
 
 
-# ---- Modificar excursión existente ----
-@router.post("/modificar")
-def modificar_excursiones():
-    """
-    Actualiza los datos de una excursión existente.
-    """
-    return
-
-
 # ---- Eliminar excursión por ID ----
 @router.post("/eliminar")
-def eliminar_excursiones(data: ExcursionesID):
+def eliminar_excursiones(data: Excursiones_id):
     """
     Elimina una excursión dado su ID.
     """

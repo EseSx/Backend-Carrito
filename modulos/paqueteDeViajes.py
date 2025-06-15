@@ -3,6 +3,11 @@
 # ===============================
 
 from main import get_connection
+
+# ===============================
+#     funciones auxiliares
+# ===============================
+
 import datetime
 from controladores.date import convertirDate, convertirHora
 
@@ -12,7 +17,6 @@ from controladores.date import convertirDate, convertirHora
 
 
 # ---- Convertir datos paquete de viaje a diccionario ----
-# ANDA
 def convertirDatosTPV(respuesta):
     """
     Convierte la respuesta de la BD a lista de diccionarios con formato de fecha y hora.
@@ -47,7 +51,6 @@ def convertirDatosTPV(respuesta):
 
 
 # ---- Insertar paquete de viaje ----
-# ANDA
 def agregarPaquetedeViaje(data):
     """
     Inserta un nuevo paquete de viaje en la base de datos.
@@ -58,7 +61,10 @@ def agregarPaquetedeViaje(data):
     try:
         cur.execute("SELECT MAX(codigo) FROM paquete_de_viajes")
         max_id = cur.fetchone()
-        max_id = int(max_id[0]) + 1
+        if max_id is None:
+            max_id = 1
+        else:
+            max_id = int(max_id[0]) + 1
         hora = convertirHora(data.hora)
         fecha = convertirDate(data.fecha)
 
@@ -84,16 +90,17 @@ def agregarPaquetedeViaje(data):
         conn.commit()
 
         return {"Mensaje": "Nuevo paquetede viajes agregado"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
 # ---- Consultar todos los paquetes de viaje ----
-# ANDA
 def verPaquetedeViajes():
     """
     Devuelve una lista con todos los paquetes de viaje.
@@ -107,16 +114,17 @@ def verPaquetedeViajes():
         nrepuesta = convertirDatosTPV(respuesta)
 
         return nrepuesta
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
 
 
 # ---- Eliminar paquete de viaje ----
-# ANDA ---- Esperando respuesta ----
 def quitarPaquetedeViaje(data):
     """
     Elimina un paquete de viaje por su código.
@@ -130,9 +138,11 @@ def quitarPaquetedeViaje(data):
         conn.commit()
 
         return {"Mensaje": "Viaje borrado exitosamente"}
+
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
+
     finally:
         cur.close()
         conn.close()
