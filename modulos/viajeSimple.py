@@ -127,6 +127,7 @@ def quitarViajesimple(codigoDeViaje):
     conn = get_connection()
     cur = conn.cursor()
     try:
+        cur.execute("DELETE FROM ventas WHERE vtas_id = %s", (codigoDeViaje,))
         cur.execute("DELETE FROM viaje_simple WHERE codigo = %s", (codigoDeViaje,))
         conn.commit()
 

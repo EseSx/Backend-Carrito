@@ -132,6 +132,7 @@ def quitarPaquetedeViaje(data):
     conn = get_connection()
     cur = conn.cursor()
     try:
+        cur.execute("DELETE FROM ventas WHERE vtas_id = %s", (data.codigoDeViaje,))
         cur.execute(
             "DELETE FROM paquete_de_viajes WHERE codigo = %s", (data.codigoDeViaje,)
         )
