@@ -2,6 +2,7 @@
 #   Creación de modelos Pydantic
 # ===============================
 from pydantic import BaseModel
+from typing import Optional
 
 
 class Usuarios_comunes(BaseModel):
@@ -31,9 +32,18 @@ class Ventas(BaseModel):
     medio_de_pago: str
     cuotas: bool
     cantidad: int
-    codigo_vs: int
-    codigo_pv: int
+    codigo_vs: Optional[int] = None
+    codigo_pv: Optional[int] = None
     precio: float
+
+
+class VentaRequest(BaseModel):
+    data: Ventas
+    correo_electronico: str
+
+
+class VentaID(BaseModel):
+    vtas_id: int
 
 
 class Viaje_simple(BaseModel):

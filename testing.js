@@ -85,10 +85,10 @@
 // export default FormularioIngresarCliente;
 
 let data = {
-  uc_id: 8,
+  vtas_id: 1002,
 };
 
-fetch("http://0.0.0.0:8000/clientes/obtenerId", {
+fetch("http://0.0.0.0:8000/ventas/eliminarTVS", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -105,6 +105,6 @@ fetch("http://0.0.0.0:8000/clientes/obtenerId", {
   .then((res) => console.log(res))
   .catch(console.error);
 
-// fetch("http://0.0.0.0:8000/clientes/obtener")
+// fetch("http://0.0.0.0:8000/ventas/obtener")
 //   .then((res) => res.json())
 //   .then((res) => console.log(res));

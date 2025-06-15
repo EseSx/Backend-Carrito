@@ -9,6 +9,7 @@ from main import get_connection
 # ===============================
 
 
+# ANDA
 def convertirDatosVentas(respuesta):
     """
     Convierte la lista de tuplas resultado de la consulta en una lista
@@ -16,7 +17,6 @@ def convertirDatosVentas(respuesta):
     """
     registros = []
     for registro in respuesta:
-        dicConvertido = []
         fecha = registro[1]
         fecha = fecha.strftime("%Y-%m-%d")
         hora = registro[2]
@@ -28,19 +28,17 @@ def convertirDatosVentas(respuesta):
         else:
             codigo_de_viaje = registro[7]
             tipo = "Paquete de Viaje"
-        dicConvertido.append(
-            {
-                "Id Venta": registro[0],
-                "Fecha": fecha,
-                "Hora": hora,
-                "Medio de pago": registro[3],
-                "Cuotas": registro[4],
-                "Cantidad": registro[5],
-                "Codigo de viaje": codigo_de_viaje,
-                "Tipo": tipo,
-                "Precio": registro[8],
-            }
-        )
+        dicConvertido = {
+            "Id Venta": registro[0],
+            "Fecha": fecha,
+            "Hora": hora,
+            "Medio de pago": registro[3],
+            "Cuotas": registro[4],
+            "Cantidad": registro[5],
+            "Codigo de viaje": codigo_de_viaje,
+            "Tipo": tipo,
+            "Precio": registro[8],
+        }
         registros.append(dicConvertido)
 
     return registros
@@ -50,44 +48,49 @@ def convertirDatosVentas(respuesta):
 #             CRUD
 # ===============================
 
-from controladores.date import convertirDate, convertirHora
+from controladores.date import convertirDate, convertirHora, conseguirDatoActual
 
 
 # ---- Crear nueva venta ----
-def sumarVenta(data, correo_electronico):
+# ANDA
+def sumarVenta(data):
     """
     Inserta una nueva venta en la tabla ventas, con formato adecuado para fecha y hora.
     """
-    fecha = convertirDate(data.fecha)
-    hora = convertirHora(data.hora)
-
+    res = conseguirDatoActual()
     conn = get_connection()
     cur = conn.cursor()
     try:
+        cur.execute("SELECT MAX(vtas_id) FROM ventas")
+        vtas_id = cur.fetchone()
+        if vtas_id is None:
+            vtas_id = 1
+        else:
+            vtas_id = int(vtas_id[0]) + 1
+
         cur.execute(
-            "INSERT INTO ventas (fecha, hora, medio_de_pago, cuotas, cantidad, codigo_vs, codigo_pv, precio) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+            "INSERT INTO ventas (vtas_id, fecha, hora, medio_de_pago, cuotas, cantidad, codigo_vs, codigo_pv, precio) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
             (
-                fecha,
-                hora,
-                data.medio_de_pago,
-                data.cuotas,
-                data.cantidad,
-                data.codigo_vs,
-                data.codigo_pv,
-                data.precio,
+                vtas_id,
+                res["fecha"],
+                res["hora"],
+                data.data.medio_de_pago,
+                data.data.cuotas,
+                data.data.cantidad,
+                data.data.codigo_vs,
+                data.data.codigo_pv,
+                data.data.precio,
             ),
         )
 
         cur.execute(
             "SELECT uc_id FROM usuario_comun WHERE correo_electronico = %s",
-            (correo_electronico),
+            (data.correo_electronico,),
         )
         uc_id = cur.fetchone()
-        uc_id = int(uc_id)
-
-        cur.execute("SELECT MAX(auto_id) FROM auto")
-        vtas_id = cur.fetchone()
-        vtas_id = int(vtas_id[0]) + 1
+        if uc_id is None:
+            raise Exception("Usuario no encontrado")
+        uc_id = int(uc_id[0])
 
         cur.execute(
             "INSERT INTO vtas_uc (vtas_id, uc_id) VALUES(%s,%s)", (vtas_id, uc_id)
@@ -100,15 +103,15 @@ def sumarVenta(data, correo_electronico):
             consultarCuposTVS,
         )
 
-        if data.codigo_vs:
+        if data.data.codigo_vs:
             # Consultar cupos es por si llegara a 0 y hay que marcarle no disponible
-            restarCupoTVS(data.codigo_vs, data.cantidad)
-            consultarCuposTVS(data.codigo_vs)
+            restarCupoTVS(data.data.codigo_vs, data.data.cantidad)
+            consultarCuposTVS(data.data.codigo_vs)
 
         else:
             # Consultar cupos es por si llegara a 0 y hay que marcarle no disponible
-            restarCupoTPV(data.codigo_pv, data.cantidad)
-            consultarCuposTPV(data.codigo_pv)
+            restarCupoTPV(data.data.codigo_pv, data.data.cantidad)
+            consultarCuposTPV(data.data.codigo_pv)
         conn.commit()
 
         return {"Mensaje": "Venta sumada"}
@@ -121,6 +124,7 @@ def sumarVenta(data, correo_electronico):
 
 
 # ---- Leer todas las ventas ----
+# ANDA
 def verVentas():
     """
     Recupera todas las ventas almacenadas y las convierte a formato legible.
@@ -147,16 +151,16 @@ def verVentas():
 
 
 # ---- Buscar venta por ID ----
-def buscarVentaId(vtas_id):
+# ANDA
+def buscarVentaId(data):
     """
     Busca una venta por su ID y devuelve sus datos formateados.
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("SELECT * FROM ventas WHERE vtas_id = %s", (vtas_id,))
+        cur.execute("SELECT * FROM ventas WHERE vtas_id = %s", (data.vtas_id,))
         registro = cur.fetchall()
-        dicConvertido = []
         fecha = registro[0][1]
         fecha = fecha.strftime("%Y-%m-%d")
         hora = registro[0][2]
@@ -169,19 +173,17 @@ def buscarVentaId(vtas_id):
             codigo_de_viaje = registro[0][7]
             tipo = "Paquete de Viaje"
 
-        dicConvertido.append(
-            {
-                "Id Venta": registro[0][0],
-                "Fecha": fecha,
-                "Hora": hora,
-                "Medio de pago": registro[0][3],
-                "Cuotas": registro[0][4],
-                "Cantidad": registro[0][5],
-                "Codigo de viaje": codigo_de_viaje,
-                "Tipo": tipo,
-                "Precio": registro[0][8],
-            }
-        )
+        dicConvertido = {
+            "Id Venta": registro[0][0],
+            "Fecha": fecha,
+            "Hora": hora,
+            "Medio de pago": registro[0][3],
+            "Cuotas": registro[0][4],
+            "Cantidad": registro[0][5],
+            "Codigo de viaje": codigo_de_viaje,
+            "Tipo": tipo,
+            "Precio": registro[0][8],
+        }
 
         return dicConvertido
     except Exception as e:
@@ -198,13 +200,22 @@ def buscarVentaId(vtas_id):
 
 
 # ---- Cancelar compra de viaje simple ----
+# ANDA
 def cancelarCompraTVS(vtas_id):
     """
     Cancela una compra de viaje simple, actualiza cupos y elimina registros relacionados.
     """
-    venta = buscarVentaId(vtas_id)
-    cantidad = venta[0]["Cantidad"]
-    codigoViaje = venta[0]["Codigo de viaje"]
+    from types import SimpleNamespace
+
+    data = {"vtas_id": vtas_id}
+    data = SimpleNamespace(**data)
+    venta = buscarVentaId(data)
+
+    if "error" in venta:
+        raise Exception(venta["error"])
+
+    cantidad = venta["Cantidad"]
+    codigoViaje = venta["Codigo de viaje"]
 
     conn = get_connection()
     cur = conn.cursor()
@@ -218,6 +229,10 @@ def cancelarCompraTVS(vtas_id):
 
         conn.commit()
 
+        from controladores.cupos import consultarCuposTVS
+
+        consultarCuposTVS(codigoViaje)
+
         return {"Mensaje": "Compra cancelada"}
     except Exception as e:
         conn.rollback()
@@ -228,13 +243,19 @@ def cancelarCompraTVS(vtas_id):
 
 
 # ---- Cancelar compra de paquete de viaje ----
+# ANDA
 def cancelarCompraTPV(vtas_id):
     """
     Cancela una compra de paquete de viaje, actualiza cupos y elimina registros relacionados.
     """
-    venta = buscarVentaId(vtas_id)
-    cantidad = venta[0]["Cantidad"]
-    codigoViaje = venta[0]["Codigo de viaje"]
+
+    from types import SimpleNamespace
+
+    data = {"vtas_id": vtas_id}
+    data = SimpleNamespace(**data)
+    venta = buscarVentaId(data)
+    cantidad = venta["Cantidad"]
+    codigoViaje = venta["Codigo de viaje"]
 
     conn = get_connection()
     cur = conn.cursor()
@@ -247,6 +268,10 @@ def cancelarCompraTPV(vtas_id):
         cur.execute("DELETE FROM ventas WHERE vtas_id = %s", (vtas_id,))
 
         conn.commit()
+
+        from controladores.cupos import consultarCuposTPV
+
+        consultarCuposTPV(codigoViaje)
 
         return {"Mensaje": "Compra cancelada"}
     except Exception as e:

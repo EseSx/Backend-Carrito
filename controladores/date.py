@@ -19,3 +19,13 @@ def convertirHora(hora):
     """
     nhora = datetime.strptime(hora, "%H:%M").time()
     return nhora
+
+
+def conseguirDatoActual():
+    ahora = datetime.now()
+
+    fecha = ahora.strftime("%Y-%m-%d")
+    hora = ahora.strftime("%H:%M")
+
+    print(fecha, hora)
+    return {"fecha": fecha, "hora": hora}

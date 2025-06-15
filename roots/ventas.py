@@ -10,13 +10,13 @@ router = APIRouter()
 #       Importación de CRUD
 # ===============================
 
-from modulos.ventas import sumarVenta, verVentas
+from modulos.ventas import sumarVenta, verVentas, buscarVentaId, cancelarCompraTVS
 
 # ===============================
 #       Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Ventas
+from modulos.esquemas import VentaRequest, VentaID
 
 
 # ===============================
@@ -26,7 +26,7 @@ from modulos.esquemas import Ventas
 
 # ---- Crear nueva venta ----
 @router.post("/ingresar")
-def ingresar_ventas(data: Ventas):
+def ingresar_ventas(data: VentaRequest):
     """
     Registra una nueva venta en la base de datos.
     """
@@ -44,6 +44,16 @@ def retornar_ventas():
     return res
 
 
+# ---- Obtener todas las ventas ----
+@router.post("/obtenerID")
+def retornar_ventas(data: VentaID):
+    """
+    Devuelve la lista de todas las ventas registradas.
+    """
+    res = buscarVentaId(data)
+    return res
+
+
 # ---- Modificar venta existente ----
 @router.post("/modificar")
 def modificar_ventas():
@@ -54,9 +64,10 @@ def modificar_ventas():
 
 
 # ---- Eliminar venta existente ----
-@router.post("/eliminar")
-def eliminar_ventas():
+@router.post("/eliminarTVS")
+def eliminar_ventas(data: VentaID):
     """
     Elimina una venta de la base de datos.
     """
-    return
+    res = cancelarCompraTVS(data.vtas_id)
+    return res
