@@ -10,6 +10,7 @@ import datetime
 # ===============================
 
 
+# ANDA
 def convertirDatosTVS(respuesta):
     """
     Convierte la lista de tuplas resultado de la consulta en una lista
@@ -23,23 +24,21 @@ def convertirDatosTVS(respuesta):
         hora = item[8]
         hora = hora.strftime("%H:%M:%S")
 
-        dicConvertido.append(
-            {
-                "Codigo": item[0],
-                "Nombre": item[1],
-                "Descripcion": item[2],
-                "Precio": item[3],
-                "Origen": item[4],
-                "Destino": item[5],
-                "Transporte": item[6],
-                "Fecha": fecha,
-                "Hora": hora,
-                "Cupos": item[9],
-                "Duracion": item[10],
-                "Tipo_de_viaje": item[11],
-                "Estado": item[12],
-            }
-        )
+        dicConvertido = {
+            "Codigo": item[0],
+            "Nombre": item[1],
+            "Descripcion": item[2],
+            "Precio": item[3],
+            "Origen": item[4],
+            "Destino": item[5],
+            "Transporte": item[6],
+            "Fecha": fecha,
+            "Hora": hora,
+            "Cupos": item[9],
+            "Duracion": item[10],
+            "Tipo_de_viaje": item[11],
+            "Estado": item[12],
+        }
         registroListas.append(dicConvertido)
     return registroListas
 
@@ -52,6 +51,7 @@ from controladores.date import convertirDate, convertirHora
 
 
 # ---- Leer todos los viajes simples ----
+# ANDA
 def verViajesSimples():
     """
     Recupera todos los viajes simples de la base de datos y los devuelve
@@ -74,6 +74,7 @@ def verViajesSimples():
 
 
 # ---- Agregar un nuevo viaje simple ----
+# ANDA
 def agregarViajeSimple(data):
     """
     Inserta un nuevo viaje simple en la base de datos,
@@ -85,10 +86,13 @@ def agregarViajeSimple(data):
     conn = get_connection()
     cur = conn.cursor()
     try:
+        cur.execute("SELECT MAX(codigo) FROM viaje_simple")
+        max_id = cur.fetchone()
+        max_id = int(max_id[0]) + 1
         cur.execute(
             "INSERT INTO viaje_simple (codigo, nombre, descripcion, precio, origen, destino, transporte, fecha, hora, cupos, duracion_aprox, tipo_de_viaje, estado) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
             (
-                data.codigo,
+                max_id,
                 data.nombre,
                 data.descripcion,
                 data.precio,
@@ -100,7 +104,7 @@ def agregarViajeSimple(data):
                 data.cupos,
                 data.duracion_aprox,
                 data.tipo_de_viaje,
-                data.estado,
+                "Disponible",
             ),
         )
         conn.commit()
@@ -115,6 +119,7 @@ def agregarViajeSimple(data):
 
 
 # ---- Eliminar un viaje simple por código ----
+# ANDA
 def quitarViajesimple(codigoDeViaje):
     """
     Elimina un viaje simple de la base de datos según su código.

@@ -85,10 +85,10 @@
 // export default FormularioIngresarCliente;
 
 let data = {
-  vtas_id: 1002,
+  vs_id: 676713849,
 };
 
-fetch("http://0.0.0.0:8000/ventas/eliminarTVS", {
+fetch("http://0.0.0.0:8000/viajes/eliminar", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -105,6 +105,6 @@ fetch("http://0.0.0.0:8000/ventas/eliminarTVS", {
   .then((res) => console.log(res))
   .catch(console.error);
 
-// fetch("http://0.0.0.0:8000/ventas/obtener")
+// fetch("http://0.0.0.0:8000/viajes/obtener")
 //   .then((res) => res.json())
 //   .then((res) => console.log(res));

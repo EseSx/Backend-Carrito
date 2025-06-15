@@ -51,7 +51,6 @@ class Viaje_simple(BaseModel):
     Modelo Pydantic para representar un viaje simple.
     """
 
-    codigo: int
     nombre: str
     descripcion: str
     precio: float
@@ -63,7 +62,6 @@ class Viaje_simple(BaseModel):
     cupos: int
     duracion_aprox: str
     tipo_de_viaje: str  # Valores: 'solo ida' o 'ida y vuelta'
-    estado: str
 
 
 class Viaje_simpleID(BaseModel):
