@@ -84,7 +84,7 @@ async def retornarValidacion(data: Validacion_de_usuarios):
     return res
 
 
-@router.post("/validarContraseñaAdmin")
+@router.post("/validarContrasenaAdmin")
 async def retornarValidacionAdmin(data: Validacion_de_usuarios):
     """
     Devuelve la validacion en formato booleano de si existe o no el administrador.
