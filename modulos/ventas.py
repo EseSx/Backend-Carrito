@@ -198,6 +198,9 @@ def buscarVentaId(data):
 
 # ---- Buscar venta por usuario ----
 def buscarVentaUsuario(data):
+    """
+    Busca una venta por usuario y devuelve sus datos formateados.
+    """
     conn = get_connection()
     cur = conn.cursor()
     try:
