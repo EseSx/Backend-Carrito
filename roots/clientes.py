@@ -16,6 +16,7 @@ from modulos.usuarioComun import (
     verClienteId,
     eliminarUsuario,
     validarCliente,
+    validarAdmin,
 )
 
 # ===============================
@@ -80,4 +81,13 @@ async def retornarValidacion(data: Validacion_de_usuarios):
     Devuelve la validacion en formato booleano de si existe o no el usuario.
     """
     res = validarCliente(data)
+    return res
+
+
+@router.post("/validarContraseñaAdmin")
+async def retornarValidacionAdmin(data: Validacion_de_usuarios):
+    """
+    Devuelve la validacion en formato booleano de si existe o no el administrador.
+    """
+    res = validarAdmin(data)
     return res
