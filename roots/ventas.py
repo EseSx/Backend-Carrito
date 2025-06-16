@@ -10,13 +10,19 @@ router = APIRouter()
 #       Importación de CRUD
 # ===============================
 
-from modulos.ventas import sumarVenta, verVentas, buscarVentaId, cancelarCompraTVS
+from modulos.ventas import (
+    sumarVenta,
+    verVentas,
+    buscarVentaId,
+    cancelarCompraTVS,
+    buscarVentaUsuario,
+)
 
 # ===============================
 #       Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Venta_request, Venta_id
+from modulos.esquemas import Venta_request, Venta_id, Usuarios_comunes_id
 
 
 # ===============================
@@ -44,13 +50,23 @@ def retornar_ventas():
     return res
 
 
-# ---- Obtener todas las ventas ----
+# ---- Obtener todas las ventas relacionadas a una id ----
 @router.post("/obtenerID")
 def retornar_ventas(data: Venta_id):
     """
     Devuelve la lista de todas las ventas registradas por id.
     """
     res = buscarVentaId(data)
+    return res
+
+
+# ---- Obtener todas las ventas relacionadas a un usuario ----
+@router.post("/obtenerUsuario")
+def retornar_ventas(data: Usuarios_comunes_id):
+    """
+    Devuelve la lista de todas las ventas registradas por usuario.
+    """
+    res = buscarVentaUsuario(data)
     return res
 
 

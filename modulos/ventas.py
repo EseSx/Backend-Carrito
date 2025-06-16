@@ -196,6 +196,34 @@ def buscarVentaId(data):
         conn.close()
 
 
+# ---- Buscar venta por usuario ----
+def buscarVentaUsuario(data):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM vtas_uc WHERE uc_id = %s", (data.uc_id,))
+        respuesta = cur.fetchall()
+        ventas_ids = []
+
+        ventas = []
+        for i in respuesta:
+            ventas_ids.append(i[0])
+
+        for id in ventas_ids:
+            data = SimpleNamespace(vtas_id=id)
+            r = buscarVentaId(data)
+            ventas.append(r)
+
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+
+    finally:
+        cur.close()
+        conn.close()
+    return ventas
+
+
 # ===============================
 #         Cancelaciones
 # ===============================
