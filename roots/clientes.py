@@ -15,13 +15,18 @@ from modulos.usuarioComun import (
     verClientes,
     verClienteId,
     eliminarUsuario,
+    validarCliente,
 )
 
 # ===============================
 #       Importación de Modelos
 # ===============================
 
-from modulos.esquemas import Usuarios_comunes, Usuarios_comunes_id
+from modulos.esquemas import (
+    Usuarios_comunes,
+    Usuarios_comunes_id,
+    Validacion_de_usuarios,
+)
 
 
 # ===============================
@@ -66,4 +71,13 @@ async def retornarPorID_usuario(data: Usuarios_comunes_id):
     Devuelve los datos de un usuario común específico por ID.
     """
     res = verClienteId(data)
+    return res
+
+
+@router.post("/validarContraseña")
+async def retornarValidacion(data: Validacion_de_usuarios):
+    """
+    Devuelve la validacion en formato booleano de si existe o no el usuario.
+    """
+    res = validarCliente(data)
     return res

@@ -12,7 +12,8 @@ def hash_password(plain_password: str) -> bytes:
     Retorna el hash generado (bytes).
     """
     hashed = bcrypt.hashpw(plain_password.encode("utf-8"), bcrypt.gensalt())
-    return hashed
+    hash_string = hashed.decode()
+    return hash_string
 
 
 # ------------------------

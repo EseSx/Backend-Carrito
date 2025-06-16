@@ -8,7 +8,8 @@ from main import get_connection
 #     funciones auxiliares
 # ===============================
 
-from controladores.hashing import hash_password
+from controladores.hashing import hash_password, verify_password
+import bcrypt
 
 # ===============================
 #             CRUD
@@ -134,6 +135,37 @@ def verClienteId(data):
         )
 
         return dicConvertido
+
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+
+    finally:
+        cur.close()
+        conn.close()
+
+
+# ---- Validar cliente ----
+def validarCliente(data):
+    """
+    Valida un cliente al volver a ingresar a la pagina
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT contraseña, correo_electronico FROM usuario_comun")
+        res = cur.fetchall()
+        for i in res:
+            if data.usuarioIngresado == i[1]:
+                hash_guardado = i[0]
+                hash_guardado_bytes = hash_guardado.encode("utf-8")
+                validacion = verify_password(
+                    data.contraseñaIngresada, hash_guardado_bytes
+                )
+
+                return validacion
+
+        return "Correo electronico incorrecto"
 
     except Exception as e:
         conn.rollback()

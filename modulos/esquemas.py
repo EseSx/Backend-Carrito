@@ -178,3 +178,12 @@ class Vinculo_pv_a_exc(BaseModel):
 
     pv_id: int
     exc_id: int
+
+
+class Validacion_de_usuarios(BaseModel):
+    """
+    Modelo Pydantic para representar logins.
+    """
+
+    usuarioIngresado: str
+    contraseñaIngresada: str
