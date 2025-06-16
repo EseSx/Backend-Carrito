@@ -134,6 +134,7 @@ def vincularPVaAuto(data):
         cur.execute(
             "INSERT INTO exc_at (pv_id, at_id) VALUES(%s,%s)", (data.pv_id, data.at_id)
         )
+        conn.commit()
 
         return {"Mensaje": "Se ha asignado un auto a un paquete de viajes"}
 
