@@ -69,6 +69,33 @@ def borrarAuto(data):
         conn.close()
 
 
+def verAutos():
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT *  FROM auto")
+        respuesta = cur.fetchall()
+        autos = []
+        for auto in respuesta:
+            at = {
+                "auto id": auto[0],
+                "modelo": auto[1],
+                "disponibles": auto[2],
+                "precio por dia": auto[3],
+            }
+
+            autos.append(at)
+
+        return autos
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+
+    finally:
+        cur.close()
+        conn.close()
+
+
 # ===============================
 #   Vincular autos a viajes
 # ===============================

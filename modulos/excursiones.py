@@ -82,6 +82,44 @@ def eliminarExcursion(data):
         conn.close()
 
 
+# ---- Obtener excursion ----
+def verExcursiones():
+    """
+    Obtiene todas las excurisones.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT * FROM excursiones")
+        respuesta = cur.fetchall()
+        excursiones = []
+
+        for exc in respuesta:
+            inicio = exc[2]
+            inicio = inicio.strftime("%H:%M:%S")
+            final = exc[3]
+            final = final.strftime("%H:%M:%S")
+            excursion = {
+                "Excursion id": exc[0],
+                "Nombre": exc[1],
+                "Inicio": inicio,
+                "Final": final,
+                "Descripcion": exc[4],
+                "Lugar": exc[5],
+            }
+
+            excursiones.append(excursion)
+        return excursiones
+
+    except Exception as e:
+        conn.rollback()
+        return {"error": str(e)}
+
+    finally:
+        cur.close()
+        conn.close()
+
+
 # ===============================
 #  Relacionar Excursión & Paquete
 # ===============================

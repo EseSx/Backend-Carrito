@@ -16,6 +16,7 @@ from modulos.excursiones import (
     paqueteViajesExcursion,
     buscarExcursionporId,
     verExcursionPaquete,
+    verExcursiones,
 )
 
 # ===============================
@@ -52,6 +53,16 @@ def ingresar_vinculo_PV(data: Vinculo_pv_a_exc):
     Recibe las ids de un paquete de viajes y una excursion, y los relaciona.
     """
     res = paqueteViajesExcursion(data)
+    return res
+
+
+# ---- Obtener todas las excursiones ----
+@router.get("/obtener")
+def retornar_excursiones():
+    """
+    Devuelve la lista de todas las excursiones almacenadas.
+    """
+    res = verExcursiones()
     return res
 
 

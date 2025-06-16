@@ -18,6 +18,7 @@ from modulos.autos import (
     verAutoID,
     verAutoPV,
     verAutoVs,
+    verAutos,
 )
 
 
@@ -67,6 +68,16 @@ async def ingresar_vinculos_PV(data: Vinculo_pv_a_auto):
     Recibe los ids de un auto y un paquete de viaje, llama a la funcion para agregar la relacion
     """
     res = vincularPVaAuto(data)
+    return res
+
+
+# ---- Obtener lista de autos ----
+@router.get("/obtener")
+async def retornar_autos():
+    """
+    Devuelve la lista de autos almacenados.
+    """
+    res = verAutos()
     return res
 
 
