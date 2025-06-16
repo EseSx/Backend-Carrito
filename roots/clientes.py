@@ -75,7 +75,7 @@ async def retornarPorID_usuario(data: Usuarios_comunes_id):
     return res
 
 
-@router.post("/validarContraseña")
+@router.post("/validarContrasena")
 async def retornarValidacion(data: Validacion_de_usuarios):
     """
     Devuelve la validacion en formato booleano de si existe o no el usuario.
