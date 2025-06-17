@@ -89,7 +89,7 @@ def eliminar_ventas(data: Venta_id):
 
 
 # ---- Confirmar mail para venta ----
-@router.post("/confimarMail")
+@router.post("/confirmarMail")
 def confirmar_mail(data: Venta_request):
     """
     Elimina una venta de la base de datos.
