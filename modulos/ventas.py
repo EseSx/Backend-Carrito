@@ -16,6 +16,8 @@ from controladores.cupos import (
     consultarCuposTVS,
 )
 from types import SimpleNamespace
+import datetime
+from datetime import date, time
 
 
 def convertirDatosVentas(respuesta):
@@ -26,9 +28,12 @@ def convertirDatosVentas(respuesta):
     registros = []
     for registro in respuesta:
         fecha = registro[1]
-        fecha = fecha.strftime("%Y-%m-%d")
+        if isinstance(fecha, (datetime, date)):
+            fecha = fecha.strftime("%Y-%m-%d")
+
         hora = registro[2]
-        hora = hora.strftime("%H:%M:%S")
+        if isinstance(hora, (datetime, time)):
+            hora = hora.strftime("%H:%M:%S")
 
         if registro[6]:
             codigo_de_viaje = registro[6]
@@ -68,7 +73,7 @@ def sumarVenta(data):
     try:
         cur.execute("SELECT MAX(vtas_id) FROM ventas")
         vtas_id = cur.fetchone()
-        if vtas_id is None:
+        if vtas_id[0] is None:
             vtas_id = 1
         else:
             vtas_id = int(vtas_id[0]) + 1

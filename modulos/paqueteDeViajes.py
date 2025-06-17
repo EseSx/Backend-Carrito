@@ -61,7 +61,7 @@ def agregarPaquetedeViaje(data):
     try:
         cur.execute("SELECT MAX(codigo) FROM paquete_de_viajes")
         max_id = cur.fetchone()
-        if max_id is None:
+        if max_id[0] is None:
             max_id = 1
         else:
             max_id = int(max_id[0]) + 1

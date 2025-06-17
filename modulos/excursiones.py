@@ -26,7 +26,7 @@ def agregarExcursiones(data):
     try:
         cur.execute("SELECT MAX(excursion_id) FROM excursiones")
         max_id = cur.fetchone()
-        if max_id is None:
+        if max_id[0] is None:
             max_id = 1
         else:
             max_id = int(max_id[0]) + 1

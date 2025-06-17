@@ -25,7 +25,7 @@ def agregarAuto(data):
     try:
         cur.execute("SELECT MAX(auto_id) FROM auto")
         max_id = cur.fetchone()
-        if max_id is None:
+        if max_id[0] is None:
             max_id = 1
         else:
             max_id = int(max_id[0]) + 1

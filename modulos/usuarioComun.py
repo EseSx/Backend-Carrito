@@ -26,7 +26,7 @@ def crearCliente(data):
     try:
         cur.execute("SELECT MAX(uc_id) FROM usuario_comun")
         max_id = cur.fetchone()
-        if max_id is None:
+        if max_id[0] is None:
             max_id = 1
         else:
             max_id = int(max_id[0]) + 1

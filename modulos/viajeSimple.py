@@ -87,7 +87,10 @@ def agregarViajeSimple(data):
     try:
         cur.execute("SELECT MAX(codigo) FROM viaje_simple")
         max_id = cur.fetchone()
-        max_id = int(max_id[0]) + 1
+        if max_id[0] is None:
+            max_id = 1
+        else:
+            max_id = int(max_id[0]) + 1
         cur.execute(
             "INSERT INTO viaje_simple (codigo, nombre, descripcion, precio, origen, destino, transporte, fecha, hora, cupos, duracion_aprox, tipo_de_viaje, estado) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
             (
