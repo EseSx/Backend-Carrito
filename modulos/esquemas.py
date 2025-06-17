@@ -31,7 +31,7 @@ class Ventas(BaseModel):
 
     medio_de_pago: str
     cuotas: bool
-    cantidad: int
+    cantidad: Optional[int] = None
     codigo_vs: Optional[int] = None
     codigo_pv: Optional[int] = None
     precio: float
