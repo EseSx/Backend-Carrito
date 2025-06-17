@@ -16,8 +16,7 @@ from controladores.cupos import (
     consultarCuposTVS,
 )
 from types import SimpleNamespace
-import datetime
-from datetime import date, time
+from datetime import datetime, date, time
 
 
 def convertirDatosVentas(respuesta):
