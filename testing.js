@@ -7,10 +7,10 @@ diccionarioVenta = {
     codigo_pv: null,
     precio: 20000.0,
   },
-  correo_electronico: "prueba@gmail.com",
+  correo_electronico: "santiagoeseiza10@gmail.com",
 };
 
-fetch("http://0.0.0.0:8000/ventas/ingresar", {
+fetch("http://0.0.0.0:8000/ventas/confimarMail", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify(diccionarioVenta),
