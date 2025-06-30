@@ -92,5 +92,5 @@ def eliminar_excursiones(data: Excursiones_id):
     """
     Elimina una excursión dado su ID.
     """
-    res = eliminarExcursion(data)
+    res = eliminarExcursion(data.excursion_id)
     return res

@@ -117,5 +117,5 @@ async def eliminar_autos(data: Auto_id):
     """
     Elimina un auto de la base de datos utilizando su ID.
     """
-    res = borrarAuto(data)
+    res = borrarAuto(data.auto_id)
     return res

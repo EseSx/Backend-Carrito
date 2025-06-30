@@ -54,5 +54,5 @@ def eliminar_paquetesDeViaje(data: Codigo_paquete_de_viaje):
     """
     Elimina un paquete de viaje dado su código identificador.
     """
-    res = quitarPaquetedeViaje(data)
+    res = quitarPaquetedeViaje(data.codigoDeViaje)
     return res

@@ -47,19 +47,34 @@ def agregarAuto(data):
         conn.close()
 
 
-def borrarAuto(data):
-    """
-    Elimina un auto de la tabla 'auto' por su ID.
-    """
+def borrarAuto(auto_id):
     conn = get_connection()
     cur = conn.cursor()
-
     try:
-        cur.execute("DELETE FROM auto WHERE auto_id = %s", (data.auto_id,))
+        cur.execute("SELECT id FROM vs_at WHERE at_id = %s", (auto_id,))
+        r = cur.fetchall()
+        regAtVsIdDs = []
+        for i in r:
+            regAtVsIdDs.append(i[0])
+
+        for registroId in regAtVsIdDs:
+            cur.execute("DELETE FROM vs_at WHERE id = %s", (registroId,))
+            conn.commit()
+
+        cur.execute("SELECT id FROM exc_at WHERE at_id = %s", (auto_id,))
+        n = cur.fetchall()
+        regAtPVIdDs = []
+        for i in n:
+            regAtPVIdDs.append(i[0])
+
+        for registroId in regAtPVIdDs:
+            cur.execute("DELETE FROM exc_at WHERE id = %s", (registroId,))
+            conn.commit()
+
+        cur.execute("DELETE FROM auto WHERE auto_id = %s", (auto_id,))
         conn.commit()
 
         return {"Mensaje": "Auto eliminado exitosamente"}
-
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}

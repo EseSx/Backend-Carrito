@@ -59,16 +59,25 @@ def agregarExcursiones(data):
 
 
 # ---- Eliminar Excursión ----
-def eliminarExcursion(data):
+def eliminarExcursion(excursion_id):
     """
-    Elimina una excursión por su ID.
+    Elimina las excurisones
     """
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute(
-            "DELETE FROM excursiones WHERE excursion_id = %s", (data.excursion_id,)
-        )
+        cur.execute("SELECT * FROM pv_exc WHERE exc_id = %s", (excursion_id,))
+        n = cur.fetchall()
+        regExcPvIDs = []
+        for i in n:
+
+            regExcPvIDs.append(i[2])
+
+        for id in regExcPvIDs:
+            cur.execute("DELETE FROM pv_exc WHERE id = %s", (id,))
+            conn.commit()
+
+        cur.execute("DELETE FROM excursiones WHERE excursion_id = %s", (excursion_id,))
         conn.commit()
 
         return {"Mensaje": "Borrado exitosamente"}

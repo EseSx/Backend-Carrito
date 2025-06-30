@@ -125,29 +125,35 @@ def verPaquetedeViajes():
 
 
 # ---- Eliminar paquete de viaje ----
-def quitarPaquetedeViaje(data):
-    """
-    Elimina un paquete de viaje por su código.
-    """
+def quitarPaquetedeViaje(codigoDeViaje):
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute(
-            "SELECT COUNT(*) FROM ventas WHERE vtas_id = %s", (data.codigoDeViaje,)
-        )
-        ventas_count = cur.fetchone()[0]
+        cur.execute("SELECT * FROM pv_exc WHERE pv_id = %s", (codigoDeViaje,))
+        n = cur.fetchall()
+        regPvExcIDs = []
+        for i in n:
 
-        if ventas_count > 0:
-            return {
-                "error": f"No se puede eliminar el viaje {data.codigoDeViaje} porque tiene {ventas_count} ventas asociadas"
-            }
-        cur.execute(
-            "DELETE FROM paquete_de_viajes WHERE codigo = %s", (data.codigoDeViaje,)
-        )
+            regPvExcIDs.append(i[2])
+
+        for id in regPvExcIDs:
+            cur.execute("DELETE FROM pv_exc WHERE id = %s", (id,))
+            conn.commit()
+
+        cur.execute("SELECT id FROM exc_at WHERE pv_id = %s", (codigoDeViaje,))
+        r = cur.fetchall()
+        regPvAtIdDs = []
+        for i in r:
+            regPvAtIdDs.append(i[0])
+
+        for registroId in regPvAtIdDs:
+            cur.execute("DELETE FROM exc_at WHERE id = %s", (registroId,))
+            conn.commit()
+
+        cur.execute("DELETE FROM paquete_de_viajes WHERE codigo = %s", (codigoDeViaje,))
         conn.commit()
 
         return {"Mensaje": "Viaje borrado exitosamente"}
-
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}

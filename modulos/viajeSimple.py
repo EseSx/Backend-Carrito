@@ -125,23 +125,26 @@ def agregarViajeSimple(data):
 # ---- Eliminar un viaje simple por código ----
 def quitarViajesimple(codigoDeViaje):
     """
-    Elimina un viaje simple de la base de datos según su código.
+    Elimina viajes por el codigo de viaje
     """
     conn = get_connection()
     cur = conn.cursor()
-    try:
-        cur.execute("SELECT COUNT(*) FROM ventas WHERE vtas_id = %s", (codigoDeViaje,))
-        ventas_count = cur.fetchone()[0]
 
-        if ventas_count > 0:
-            return {
-                "error": f"No se puede eliminar el viaje {codigoDeViaje} porque tiene {ventas_count} ventas asociadas"
-            }
+    try:
+        cur.execute("SELECT id FROM vs_at WHERE vs_id = %s", (codigoDeViaje,))
+        r = cur.fetchall()
+        regVsAtIdDs = []
+        for i in r:
+            regVsAtIdDs.append(i[0])
+
+        for registroId in regVsAtIdDs:
+            cur.execute("DELETE FROM vs_at WHERE id = %s", (registroId,))
+            conn.commit()
+
         cur.execute("DELETE FROM viaje_simple WHERE codigo = %s", (codigoDeViaje,))
         conn.commit()
 
         return {"Mensaje": "Viaje borrado exitosamente"}
-
     except Exception as e:
         conn.rollback()
         return {"error": str(e)}
